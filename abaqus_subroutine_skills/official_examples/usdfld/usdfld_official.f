@@ -1,0 +1,35 @@
+C=======================================================================
+C Abaqus Official Example: USDFLD for User Defined Field
+C Define field variables based on coordinates and time
+C=======================================================================
+      SUBROUTINE USDFLD(FIELD,STATEV,PNEWDT,DIRECT,T,CELENT,
+     1 TIME,DTIME,CMNAME,ORNAME,NFIELD,NSTATV,NOEL,NPT,LAYER,
+     2 KSPT,KSTEP,KINC,NDI,NSHR,COORD,JMAC,JMATYP,MATLAYO,
+     3 LACCFLA)
+C
+      INCLUDE 'ABA_PARAM.INC'
+C
+      CHARACTER*80 CMNAME,ORNAME
+      CHARACTER*3  FLGRAY(15)
+      DIMENSION FIELD(NFIELD),STATEV(NSTATV),DIRECT(3,3),
+     1 T(3,3),TIME(2),COORD(3)
+      DIMENSION JMAC(*),JMATYP(*)
+C
+C     USER SUBROUTINE TO DEFINE FIELD VARIABLES
+C
+C     FIELD(1) - FIRST FIELD VARIABLE
+C     FIELD(2) - SECOND FIELD VARIABLE (IF NEEDED)
+C
+C     EXAMPLE: FIELD DEPENDS ON COORDINATES AND TIME
+      X = COORD(1)
+      Y = COORD(2)
+      Z = COORD(3)
+C
+C     DEFINE FIELD AS FUNCTION OF POSITION AND TIME
+      FIELD(1) = X + Y + TIME(2)
+C
+C     STORE FIELD IN STATE VARIABLE FOR OUTPUT
+      STATEV(1) = FIELD(1)
+C
+      RETURN
+      END

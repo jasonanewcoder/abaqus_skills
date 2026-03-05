@@ -1,0 +1,87 @@
+C=======================================================================
+C Abaqus Official Example: UEL for User Defined Element
+C Simple 2-node spring element
+C=======================================================================
+      SUBROUTINE UEL(RHS,AMATRX,SVARS,ENERGY,NDOFEL,NRHS,NSVARS,
+     1 PROPS,NPROPS,COORDS,MCRD,NNODE,U,DU,V,A,JTYPE,TIME,DTIME,
+     2 KSTEP,KINC,JELEM,PARAMS,NDLOAD,JDLTYP,ADLMAG,PREDEF,
+     3 NPREDF,LFLAGS,MLVARX,DDLMAG,MDLOAD,PNEWDT,JPROPS,NJPROP,
+     4 PERIOD)
+C
+      INCLUDE 'ABA_PARAM.INC'
+C
+      DIMENSION RHS(NDOFEL,NRHS),AMATRX(NDOFEL,NDOFEL),
+     1 SVARS(NSVARS),ENERGY(8),PROPS(NPROPS),COORDS(MCRD,NNODE),
+     2 U(NDOFEL),DU(NDOFEL),V(NDOFEL),A(NDOFEL),TIME(2),
+     3 PARAMS(3),JDLTYP(MDLOAD,*),ADLMAG(MDLOAD,*),
+     4 DDLMAG(MDLOAD,*),PREDEF(2,NPREDF,NNODE),LFLAGS(*),
+     5 JPROPS(*)
+C
+      PARAMETER (ZERO=0.D0,ONE=1.D0,TWO=2.D0,THREE=3.D0,
+     1           SIX=6.D0,TWELVE=12.D0)
+C
+C     USER SUBROUTINE FOR 2-NODE SPRING ELEMENT
+C     NNODE = 2, NDOFEL = 6 (3 DOF PER NODE)
+C
+C     PROPS(1) = SPRING STIFFNESS
+C
+      STIFF = PROPS(1)
+C
+C     COMPUTE CURRENT LENGTH
+      DX = COORDS(1,2) + U(4) - COORDS(1,1) - U(1)
+      DY = COORDS(2,2) + U(5) - COORDS(2,1) - U(2)
+      DZ = COORDS(3,2) + U(6) - COORDS(3,1) - U(3)
+C
+      CURR_LENGTH = SQRT(DX*DX + DY*DY + DZ*DZ)
+C
+C     INITIAL LENGTH
+      DX0 = COORDS(1,2) - COORDS(1,1)
+      DY0 = COORDS(2,2) - COORDS(2,1)
+      DZ0 = COORDS(3,2) - COORDS(3,1)
+      INIT_LENGTH = SQRT(DX0*DX0 + DY0*DY0 + DZ0*DZ0)
+C
+C     DIRECTION COSINES
+      IF (CURR_LENGTH .GT. ZERO) THEN
+        CX = DX / CURR_LENGTH
+        CY = DY / CURR_LENGTH
+        CZ = DZ / CURR_LENGTH
+      ELSE
+        CX = DX0 / INIT_LENGTH
+        CY = DY0 / INIT_LENGTH
+        CZ = DZ0 / INIT_LENGTH
+      END IF
+C
+C     FORCE IN SPRING
+      FORCE = STIFF * (CURR_LENGTH - INIT_LENGTH)
+C
+C     ASSEMBLE RESIDUAL (INTERNAL FORCE)
+      RHS(1,1) = -FORCE * CX
+      RHS(2,1) = -FORCE * CY
+      RHS(3,1) = -FORCE * CZ
+      RHS(4,1) =  FORCE * CX
+      RHS(5,1) =  FORCE * CY
+      RHS(6,1) =  FORCE * CZ
+C
+C     ASSEMBLE STIFFNESS MATRIX
+      DO I = 1,6
+        DO J = 1,6
+          AMATRX(I,J) = ZERO
+        END DO
+      END DO
+C
+C     GEOMETRIC AND MATERIAL STIFFNESS
+      DO I = 1,3
+        DO J = 1,3
+          AMATRX(I,J)     =  STIFF * CX * CX
+          AMATRX(I+3,J)   = -STIFF * CX * CX
+          AMATRX(I,J+3)   = -STIFF * CX * CX
+          AMATRX(I+3,J+3) =  STIFF * CX * CX
+        END DO
+      END DO
+C
+C     STORE FORCE IN STATE VARIABLE
+      SVARS(1) = FORCE
+      SVARS(2) = CURR_LENGTH
+C
+      RETURN
+      END
