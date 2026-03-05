@@ -1,0 +1,213 @@
+# =============================================================================
+# Abaqus Development Skills Library - Git Ignore File
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Abaqus Generated Files
+# -----------------------------------------------------------------------------
+
+# Database files
+*.odb
+*.odb_f
+*.sim
+*.simdir/
+*.stt
+*.mdl
+*.odb_lock
+
+# Job files
+*.msg
+*.dat
+*.sta
+*.res
+*.fil
+*.abq
+*.pac
+*.prt
+*.sem
+*.stt
+*.com
+*.log
+*.rpy
+*.rpy.*
+*.rec
+*.cae
+*.jnl
+*.jnl.*
+*.023
+*.ipm
+*.listener.log*
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*~
+*.swp
+*.swo
+
+# -----------------------------------------------------------------------------
+# Fortran Compiled Files (Subroutines)
+# -----------------------------------------------------------------------------
+
+# Object files
+*.o
+*.obj
+
+# Module files
+*.mod
+*.smod
+
+# Static and dynamic libraries
+*.a
+*.lib
+*.la
+*.lo
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executable files
+*.exe
+*.out
+*.app
+
+# Debug files
+*.pdb
+*.ilk
+*.exp
+
+# -----------------------------------------------------------------------------
+# Python Files
+# -----------------------------------------------------------------------------
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# -----------------------------------------------------------------------------
+# IDE and Editor Files
+# -----------------------------------------------------------------------------
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm / IntelliJ
+.idea/
+*.iml
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Notepad++
+*.bak
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+#*#
+.#*
+
+# -----------------------------------------------------------------------------
+# Operating System Files
+# -----------------------------------------------------------------------------
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+.directory
+.Trash-*
+.nfs*
+
+# -----------------------------------------------------------------------------
+# Documentation Build Files
+# -----------------------------------------------------------------------------
+
+docs/_build/
+docs/build/
+site/
+*.pdf
+
+# -----------------------------------------------------------------------------
+# Archives
+# -----------------------------------------------------------------------------
+
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# -----------------------------------------------------------------------------
+# Logs and Databases
+# -----------------------------------------------------------------------------
+
+*.log
+*.sql
+*.sqlite
+*.sqlite3
+
+# -----------------------------------------------------------------------------
+# Project Specific
+# -----------------------------------------------------------------------------
+
+# Large result files (keep examples small)
+*.odb
+results/
+output/
+data/
+
+# User-specific configuration
+config.local.*
+*.local
+
+# Backup folders
+backup/
+old/
+temp/
