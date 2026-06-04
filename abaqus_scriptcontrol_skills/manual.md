@@ -288,7 +288,7 @@ print("Analysis completed!")
 **Goal**: Learn local mesh refinement, result post-processing  
 **Skills involved**: Geometry cutting → Local refinement → Stress extraction → Theoretical comparison
 
-See [examples/example_pressure_vessel.md](examples/example_pressure_vessel.md) for details.
+> ⚠️ A dedicated example file for this tutorial is planned. In the meantime, refer to the [general/SKILL.md](general/SKILL.md) and [static/SKILL.md](static/SKILL.md) skills to build this analysis.
 
 ---
 

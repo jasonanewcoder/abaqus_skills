@@ -1,3 +1,27 @@
+---
+name: abaqus-script-control-xfem
+description: Abaqus XFEM (eXtended Finite Element Method) — crack initiation and propagation simulation without remeshing. Supports damage initiation criteria and evolution laws.
+version: "1.0"
+capabilities:
+  - xfem_crack_initiation
+  - crack_propagation
+  - damage_evolution
+  - fracture_energy_analysis
+triggers:
+  - "XFEM"
+  - "crack analysis"
+  - "crack propagation"
+  - "fracture"
+  - "damage evolution"
+  - "裂纹分析"
+  - "裂纹扩展"
+  - "断裂分析"
+constraints:
+  - "Requires general/SKILL.md and static/SKILL.md as foundation"
+  - "Reference documentation is limited — expand for production use"
+  - "XFEM requires careful damage initiation criteria selection"
+---
+
 # Abaqus XFEM Crack Analysis Skills
 
 ## Overview
@@ -43,8 +67,6 @@ material.maxpsDamageInitiation.DamageEvolution(
 )
 ```
 
-**Detailed Documentation:** [`reference/crack.md`](reference/crack.md)
-
 ---
 
 ## Quick Reference
@@ -61,6 +83,10 @@ material.maxpsDamageInitiation.DamageEvolution(
 
 - ENERGY (Based on fracture energy)
 - DISPLACEMENT (Based on displacement)
+
+## Detailed Reference
+
+- [Crack Initiation & Propagation](reference/crack_initiation.md) — MAXPS/MAXPE/QUADS criteria, energy/displacement-based damage evolution, initial defects, convergence troubleshooting
 
 ## Related Skills
 

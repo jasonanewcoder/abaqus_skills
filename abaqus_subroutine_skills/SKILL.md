@@ -1,3 +1,33 @@
+---
+name: abaqus-subroutine-development
+description: Abaqus user subroutine development in Fortran — UMAT/VUMAT custom materials, DLOAD/VDLOAD loads, DISP/VDISP boundaries, USDFLD fields, SIGINI/SDVINI initial conditions, FRIC/VRIC friction, HETVAL/FILM thermal, UEL/VUEL custom elements.
+version: "1.0"
+capabilities:
+  - custom_material_model
+  - distributed_load_definition
+  - custom_boundary_conditions
+  - user_field_variables
+  - initial_conditions
+  - custom_friction
+  - thermal_subroutines
+  - custom_elements
+triggers:
+  - "UMAT"
+  - "VUMAT"
+  - "DLOAD"
+  - "user subroutine"
+  - "custom material"
+  - "Fortran subroutine"
+  - "子程序"
+  - "用户材料"
+constraints:
+  - "Requires Fortran compiler (Intel Fortran 19.0+ or GNU Fortran 9.0+)"
+  - "Fixed-format Fortran (cols 1-5 labels, col 6 continuation, cols 7-72 code)"
+  - "Always include INCLUDE 'ABA_PARAM.INC'"
+  - "Use REAL*8 for all floating-point variables"
+  - "Reference documentation covers 8 of 15 subroutine types — check availability"
+---
+
 # Abaqus Subroutine Development Skill
 
 ## Skill Description
@@ -30,6 +60,11 @@ This skill provides AI-assisted programming guidance for developing Abaqus user 
 | SIGINI | General | Initial stress definition |
 | SDVINI | General | Initial state variables |
 | FRIC | Standard | Custom friction model |
+| VRIC | Explicit | Custom friction model |
+| HETVAL | Thermal | Heat generation |
+| FILM | Thermal | Custom convection |
+| UEL | Standard | Custom element |
+| VUEL | Explicit | Custom element |
 | VRIC | Explicit | Custom friction model |
 | HETVAL | Thermal | Heat generation |
 | FILM | Thermal | Custom convection |

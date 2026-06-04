@@ -1,3 +1,29 @@
+---
+name: abaqus-script-control-thermal
+description: Abaqus thermal stress analysis — steady-state and transient heat transfer, sequential and fully-coupled thermal-mechanical analysis.
+version: "1.0"
+capabilities:
+  - steady_state_heat_transfer
+  - transient_heat_transfer
+  - thermal_mechanical_coupling
+  - sequential_coupling
+  - fully_coupled_analysis
+triggers:
+  - "thermal analysis"
+  - "heat transfer"
+  - "thermal stress"
+  - "temperature field"
+  - "thermal-mechanical"
+  - "welding simulation"
+  - "热分析"
+  - "热应力"
+  - "温度场"
+constraints:
+  - "Requires general/SKILL.md as foundation"
+  - "Thermal properties require unit conversion (specific heat: J/(kg·K) → mJ/(tonne·K) × 10^9)"
+  - "Reference documentation is limited — expand for production use"
+---
+
 # Abaqus Thermal Stress Analysis Skills
 
 ## Overview
@@ -39,8 +65,6 @@ model.Temperature(
 )
 ```
 
-**Detailed Documentation:** [`reference/stress.md`](reference/stress.md)
-
 ---
 
 ## Quick Reference
@@ -57,6 +81,11 @@ model.Temperature(
 
 1. **Sequential Coupling**: Thermal analysis first → Stress analysis second
 2. **Fully Coupled**: Simultaneously solve temperature and displacement
+
+## Detailed Reference
+
+- [Steady-State Heat Transfer](reference/steady_state.md) — Thermal equilibrium, conduction, convection, radiation BCs
+- [Transient Heat Transfer & Thermal-Stress Coupling](reference/transient.md) — Time-varying temperature, sequential and fully-coupled analysis
 
 ## Related Skills
 

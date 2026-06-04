@@ -1,3 +1,27 @@
+---
+name: abaqus-script-control-fatigue
+description: Abaqus fatigue analysis — high-cycle fatigue (S-N curve) and low-cycle fatigue life prediction under cyclic loading.
+version: "1.0"
+capabilities:
+  - high_cycle_fatigue
+  - low_cycle_fatigue
+  - sn_curve_life_prediction
+  - damage_accumulation
+triggers:
+  - "fatigue analysis"
+  - "fatigue life"
+  - "S-N curve"
+  - "cyclic loading"
+  - "high-cycle fatigue"
+  - "low-cycle fatigue"
+  - "疲劳分析"
+  - "疲劳寿命"
+constraints:
+  - "Requires general/SKILL.md and static/SKILL.md as foundation"
+  - "Reference documentation is currently limited — expand for production use"
+  - "Fatigue analysis requires material S-N curve data"
+---
+
 # Abaqus Fatigue Analysis Skills
 
 ## Overview
@@ -29,8 +53,6 @@ log_2N = (log_S - log_Sf) / b
 cycles_to_failure = int(10**log_2N / 2)
 ```
 
-**Detailed Documentation:** [`reference/high_cycle.md`](reference/high_cycle.md)
-
 ---
 
 ## Quick Reference
@@ -49,6 +71,10 @@ cycles_to_failure = int(10**log_2N / 2)
 | Surface Roughness | Reduces fatigue strength |
 | Size Effect | Larger sizes reduce strength |
 | Load Type | Bending > Tension/Compression > Torsion |
+
+## Detailed Reference
+
+- [High-Cycle Fatigue Analysis](reference/high_cycle.md) — S-N curve, mean stress correction, Miner's damage accumulation
 
 ## Related Skills
 

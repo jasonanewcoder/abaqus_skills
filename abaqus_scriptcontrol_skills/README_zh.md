@@ -15,7 +15,7 @@
 
 ```
 abaqus_scriptcontrol_skills/
-├── README.md                 # 本文件
+├── README.md                 # 本文件（英文版）
 ├── README_zh.md              # 中文版本
 ├── manual.md                 # 使用手册 (英文版)
 ├── manual_zh.md              # 使用手册 (中文版)
@@ -36,23 +36,13 @@ abaqus_scriptcontrol_skills/
 │       ├── linear.md        # 线性静力分析
 │       └── nonlinear.md      # 非线性静力分析
 ├── fatigue/                  # 疲劳分析技能
-│   ├── SKILL.md
-│   └── reference/
-│       └── high_cycle.md    # 高周疲劳
+│   └── SKILL.md
 ├── xfem/                     # 扩展有限元 XFEM
-│   ├── SKILL.md
-│   └── reference/
-│       └── crack.md         # XFEM裂纹分析
+│   └── SKILL.md
 ├── thermal/                  # 热应力分析
-│   ├── SKILL.md
-│   └── reference/
-│       └── stress.md        # 热应力分析
-├── composite/                # 复合材料分析
-│   ├── SKILL.md
-│   └── reference/
-│       └── shell.md         # 复合材料层合板
-└── examples/                 # 综合示例
-    └── example_pressure_vessel.md
+│   └── SKILL.md
+└── composite/                # 复合材料分析
+    └── SKILL.md
 ```
 
 ## 技能模块说明

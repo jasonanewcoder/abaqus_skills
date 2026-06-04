@@ -393,7 +393,7 @@ def create_material_from_library(model, material_name, part):
     props = MATERIAL_LIBRARY[material_name]
     material = model.Material(name=material_name)
     material.Elastic(table=((props['E'], props['nu']),))
-    material.Density(table=((props['rho']),),))
+    material.Density(table=((props['rho']),))
     
     if 'yield' in props:
         material.Plastic(table=((props['yield'], 0.0),))

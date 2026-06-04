@@ -1,3 +1,29 @@
+---
+name: abaqus-script-control-static
+description: Abaqus static analysis — linear elastic small-deformation analysis and nonlinear large-deformation/plasticity/contact analysis. Builds on general skills for structural FEA.
+version: "1.0"
+capabilities:
+  - linear_static_analysis
+  - nonlinear_static_analysis
+  - plastic_material_analysis
+  - contact_analysis
+  - post_buckling_analysis
+triggers:
+  - "static analysis"
+  - "linear static"
+  - "nonlinear static"
+  - "large deformation"
+  - "plastic analysis"
+  - "contact analysis"
+  - "stress strain displacement"
+  - "静力分析"
+  - "非线性分析"
+constraints:
+  - "Requires abaqus_scriptcontrol_skills/general/SKILL.md as foundation"
+  - "N-mm-MPa unit system"
+  - "Nonlinear analysis requires careful increment control"
+---
+
 # Abaqus Static Analysis Skills
 
 ## Overview

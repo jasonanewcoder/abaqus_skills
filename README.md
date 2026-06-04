@@ -21,6 +21,93 @@ This is a comprehensive **Abaqus Development Skills Library** designed to help e
 
 ---
 
+## Installation
+
+### Method 1: Claude Code Skills CLI (Recommended)
+
+```bash
+npx skills add jasonanewcoder/abaqus_skills
+```
+
+This registers all skills in the library with Claude Code. After installation, Claude will automatically load the relevant skill when you describe an Abaqus task.
+
+> **Requirements**: [Node.js](https://nodejs.org/) ≥ 18 (for `npx`). Ships with Claude Code.
+
+### Method 2: Git Clone
+
+```bash
+git clone https://github.com/jasonanewcoder/abaqus_skills.git ~/.claude/skills/abaqus_skills
+```
+
+Then add to your Claude Code settings (`~/.claude/settings.json`):
+
+```json
+{
+  "skills": {
+    "abaqus_scriptcontrol_skills": "~/.claude/skills/abaqus_skills/abaqus_scriptcontrol_skills",
+    "abaqus_subroutine_skills": "~/.claude/skills/abaqus_skills/abaqus_subroutine_skills"
+  }
+}
+```
+
+### Method 3: Windows — Git Bash / WSL
+
+```bash
+# In Git Bash or WSL terminal:
+git clone https://github.com/jasonanewcoder/abaqus_skills.git ~/.claude/skills/abaqus_skills
+```
+
+Or use `npx` in PowerShell / Command Prompt:
+
+```cmd
+npx skills add jasonanewcoder/abaqus_skills
+```
+
+### Method 4: Windows — Manual Download (No CLI Tools)
+
+1. Visit [github.com/jasonanewcoder/abaqus_skills](https://github.com/jasonanewcoder/abaqus_skills)
+2. Click **Code → Download ZIP**
+3. Extract to `%USERPROFILE%\.claude\skills\abaqus_skills\`
+4. Register in `%USERPROFILE%\.claude\settings.json` (see Method 2)
+
+### Method 5: curl (macOS / Linux / Git Bash on Windows)
+
+```bash
+# Download a single skill reference directly
+curl -O https://raw.githubusercontent.com/jasonanewcoder/abaqus_skills/main/abaqus_scriptcontrol_skills/general/SKILL.md
+
+# Or download the entire repo as a tar archive (no git needed)
+curl -L https://github.com/jasonanewcoder/abaqus_skills/archive/refs/heads/main.tar.gz | tar xz -C ~/.claude/skills/
+mv ~/.claude/skills/abaqus_skills-main ~/.claude/skills/abaqus_skills
+```
+
+### Method 6: PowerShell (Windows)
+
+```powershell
+# Download entire repo as ZIP
+Invoke-WebRequest -Uri "https://github.com/jasonanewcoder/abaqus_skills/archive/refs/heads/main.zip" -OutFile "$env:TEMP\abaqus_skills.zip"
+
+# Extract
+Expand-Archive -Path "$env:TEMP\abaqus_skills.zip" -DestinationPath "$env:USERPROFILE\.claude\skills\"
+
+# Rename
+Rename-Item "$env:USERPROFILE\.claude\skills\abaqus_skills-main" "$env:USERPROFILE\.claude\skills\abaqus_skills"
+```
+
+### Verify Installation
+
+After installing with any method, verify Claude Code sees the skills:
+
+```bash
+# List installed skills
+ls ~/.claude/skills/abaqus_skills/
+
+# Or ask Claude in a conversation:
+# "What Abaqus skills are available?"
+```
+
+---
+
 ## Core Modules
 
 This skills library consists of two main modules:
@@ -232,6 +319,64 @@ Made with ❤️ by Abaqus developers for the Abaqus community
 ## 中文介绍
 
 本项目是一个全面的 **Abaqus 二次开发技能库**，旨在帮助工程师、研究人员和学生快速掌握 Abaqus 的脚本控制和用户子程序开发技术。通过结构化的知识组织和丰富的示例代码，大幅降低 Abaqus 二次开发的学习门槛。
+
+### 安装方法
+
+#### 方法一：Claude Code Skills CLI（推荐）
+
+```bash
+npx skills add jasonanewcoder/abaqus_skills
+```
+
+安装后，Claude 会在您描述 Abaqus 任务时自动加载相应技能。
+
+> **环境要求**：[Node.js](https://nodejs.org/) ≥ 18（`npx` 随 Claude Code 附带）。
+
+#### 方法二：Git Clone
+
+```bash
+git clone https://github.com/jasonanewcoder/abaqus_skills.git ~/.claude/skills/abaqus_skills
+```
+
+#### 方法三：Windows — Git Bash / WSL
+
+```bash
+# 在 Git Bash 或 WSL 终端中：
+git clone https://github.com/jasonanewcoder/abaqus_skills.git ~/.claude/skills/abaqus_skills
+```
+
+或在 PowerShell / 命令提示符中：
+
+```cmd
+npx skills add jasonanewcoder/abaqus_skills
+```
+
+#### 方法四：Windows — 手动下载（无需命令行工具）
+
+1. 访问 [github.com/jasonanewcoder/abaqus_skills](https://github.com/jasonanewcoder/abaqus_skills)
+2. 点击 **Code → Download ZIP**
+3. 解压到 `%USERPROFILE%\.claude\skills\abaqus_skills\`
+
+#### 方法五：curl（macOS / Linux / Windows Git Bash）
+
+```bash
+curl -L https://github.com/jasonanewcoder/abaqus_skills/archive/refs/heads/main.tar.gz | tar xz -C ~/.claude/skills/
+mv ~/.claude/skills/abaqus_skills-main ~/.claude/skills/abaqus_skills
+```
+
+#### 方法六：PowerShell（Windows）
+
+```powershell
+Invoke-WebRequest -Uri "https://github.com/jasonanewcoder/abaqus_skills/archive/refs/heads/main.zip" -OutFile "$env:TEMP\abaqus_skills.zip"
+Expand-Archive -Path "$env:TEMP\abaqus_skills.zip" -DestinationPath "$env:USERPROFILE\.claude\skills\"
+Rename-Item "$env:USERPROFILE\.claude\skills\abaqus_skills-main" "$env:USERPROFILE\.claude\skills\abaqus_skills"
+```
+
+#### 验证安装
+
+```bash
+ls ~/.claude/skills/abaqus_skills/
+```
 
 ### 核心模块
 

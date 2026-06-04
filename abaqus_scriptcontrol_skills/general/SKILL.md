@@ -1,3 +1,30 @@
+---
+name: abaqus-script-control-general
+description: Abaqus Python scripting fundamentals — geometric modeling, material definition, step setup, boundary conditions & loads, mesh generation, and job submission. Foundation skill for all Abaqus analysis types.
+version: "1.0"
+capabilities:
+  - geometric_modeling
+  - material_definition
+  - step_setup
+  - boundary_conditions_and_loads
+  - mesh_generation
+  - job_submission
+triggers:
+  - "create model"
+  - "define material"
+  - "apply boundary condition"
+  - "generate mesh"
+  - "submit job"
+  - "abaqus script"
+  - "abaqus python"
+  - "建模仿真"
+  - "材料定义"
+constraints:
+  - "Requires abaqusConstants and caeModules imports (Abaqus CAE environment)"
+  - "Default unit system is N-mm-MPa"
+  - "Python 2.7/3.x depending on Abaqus version"
+---
+
 # Abaqus General Skills
 
 ## Overview

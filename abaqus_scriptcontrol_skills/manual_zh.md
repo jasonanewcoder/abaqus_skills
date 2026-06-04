@@ -288,7 +288,7 @@ print("分析完成！")
 **目标**：学习局部网格加密、结果后处理  
 **涉及技能**：几何切割 → 局部加密 → 应力提取 → 理论对比
 
-详见 [examples/example_pressure_vessel.md](examples/example_pressure_vessel.md)
+> ⚠️ 此示例的独立教程文件正在计划中。目前可参考 [general/SKILL.md](general/SKILL.md) 和 [static/SKILL.md](static/SKILL.md) 技能来构建此分析。
 
 ---
 

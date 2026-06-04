@@ -1,3 +1,30 @@
+---
+name: abaqus-script-control-composite
+description: Abaqus composite material analysis — laminated shell elements, classical laminate theory (CLT), Hashin failure criteria, and progressive damage simulation.
+version: "1.0"
+capabilities:
+  - composite_layup_definition
+  - laminate_stiffness_analysis
+  - hashin_failure_criteria
+  - progressive_damage
+  - fiber_matrix_failure
+triggers:
+  - "composite analysis"
+  - "laminate"
+  - "layup"
+  - "Hashin failure"
+  - "fiber failure"
+  - "matrix failure"
+  - "composite material"
+  - "复合材料"
+  - "层合板"
+  - "铺层"
+constraints:
+  - "Requires general/SKILL.md as foundation"
+  - "Reference documentation is limited — expand for production use"
+  - "Composite analysis requires orthotropic material properties (LAMINA type)"
+---
+
 # Abaqus Composite Material Analysis Skills
 
 ## Overview
@@ -46,8 +73,6 @@ for i, (angle, thickness) in enumerate(layup):
     )
 ```
 
-**Detailed Documentation:** [`reference/shell.md`](reference/shell.md)
-
 ---
 
 ## Quick Reference
@@ -74,6 +99,11 @@ for i, (angle, thickness) in enumerate(layup):
 - HSNFCCRT > 1: Fiber compression failure
 - HSNMTCRT > 1: Matrix tension failure
 - HSNMCCRT > 1: Matrix compression failure
+
+## Detailed Reference
+
+- [Laminate Layup Definition](reference/layup_definition.md) — Classical Laminate Theory, orthotropic lamina properties, programmatic layup creation, per-ply post-processing
+- [Failure Analysis](reference/failure_analysis.md) — Hashin/Puck/LaRC criteria, progressive damage, damage variable interpretation, strength data
 
 ## Related Skills
 

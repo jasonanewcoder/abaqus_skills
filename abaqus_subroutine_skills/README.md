@@ -4,120 +4,116 @@
 
 ---
 
-## English
+<a name="english"></a>
 
-### Overview
+## Overview
 
-This is a comprehensive skill library for developing Abaqus user subroutines. It provides AI-assisted programming guidance with standardized Fortran code templates, detailed theoretical explanations, and complete engineering examples.
+Structured Fortran subroutine knowledge for AI-assisted Abaqus user subroutine development. Covers UMAT/VUMAT, DLOAD/VDLOAD, DISP/VDISP, USDFLD, SIGINI/SDVINI, FRIC/VRIC, HETVAL/FILM, and UEL/VUEL.
 
-### Features
+**For detailed documentation, see [`manual.md`](manual.md)** and the **[AI generation guide](prompts/ai_guide.md)**.
 
-- **Multiple Subroutine Types**: UMAT, VUMAT, DLOAD, VDLOAD, DISP, VDISP, USDFLD, SIGINI, SDVINI, FRIC, VRIC, HETVAL, FILM, UEL, VUEL
-- **Complete Templates**: Ready-to-use Fortran code for various engineering applications
-- **Theoretical Background**: Mathematical formulas and physical models
-- **Best Practices**: Code standards, debugging tips, and performance optimization
-- **Troubleshooting Guide**: Common errors and solutions
+## Quick Reference
 
-### Directory Structure
+| Subroutine | Solver | Purpose | Reference |
+|-----------|--------|---------|-----------|
+| UMAT | Standard | Custom material | `reference/material/umat_*.md` |
+| VUMAT | Explicit | Custom material | `reference/material/vumat_*.md` |
+| DLOAD | Standard | Distributed load | `reference/load/dload_moving.md` |
+| VDLOAD | Explicit | Distributed load | `reference/load/vdload_moving.md` |
+| DISP | Standard | Custom boundary | `reference/boundary/disp_control.md` |
+| VDISP | Explicit | Custom boundary | `reference/boundary/vdisp_control.md` |
+| USDFLD | General | Field variables | `reference/field/usdfld_spatial.md` |
+| SIGINI | General | Initial stress | `reference/initial/sigini_stress.md` |
+| SDVINI | General | Initial state variables | `reference/initial/sdvini_state_variables.md` |
+| FRIC | Standard | Custom friction | `reference/friction/fric_contact.md` |
+| HETVAL | Thermal | Heat generation | `reference/thermal/hetval_heat.md` |
+| FILM | Thermal | Custom convection | `reference/thermal/film_convection.md` |
+| UEL | Standard | Custom element | `reference/element/uel_spring.md` |
+
+## Quick Start
+
+```
+1. Read SKILL.md for overall capabilities
+2. Select a reference file based on your need
+3. Copy and modify the code template
+4. Compile: abaqus make library=subroutine.f
+5. Run: abaqus job=jobname user=subroutine.f
+```
+
+## Directory Structure
 
 ```
 abaqus_subroutine_skills/
-├── SKILL.md              # Main skill file (Claude Code format)
-├── manual.md             # English manual
-├── manual_zh.md          # Chinese manual
-├── README.md             # This file
-├── README_zh.md          # Chinese README
-├── reference/            # Reference documentation
-│   ├── material/         # Material subroutines
-│   ├── load/            # Load subroutines
-│   ├── boundary/        # Boundary subroutines
-│   ├── field/           # Field variable subroutines
-│   ├── initial/         # Initial condition subroutines
-│   ├── thermal/         # Thermal subroutines
-│   ├── friction/        # Friction subroutines
-│   └── element/         # Custom element subroutines
-└── official_examples/    # Official Abaqus examples
+├── SKILL.md                  # Main skill file
+├── manual.md                 # Full manual (tutorials, best practices)
+├── manual_zh.md              # Chinese manual
+├── README.md                 # ← This file (brief overview)
+├── prompts/ai_guide.md       # AI subroutine generation guide
+├── reference/                # Reference documentation
+│   ├── material/             # UMAT/VUMAT
+│   ├── load/                 # DLOAD/VDLOAD
+│   ├── boundary/             # DISP/VDISP
+│   ├── field/                # USDFLD
+│   ├── initial/              # SIGINI/SDVINI
+│   ├── thermal/              # HETVAL/FILM
+│   ├── friction/             # FRIC/VRIC
+│   └── element/              # UEL/VUEL
+└── official_examples/        # Verified Fortran examples
 ```
 
-### Quick Start
-
-1. **Read the SKILL.md** to understand the overall capabilities
-2. **Select a reference file** based on your requirement (see manual for guidance)
-3. **Copy and modify** the code template for your specific problem
-4. **Compile and test** following the instructions in the reference
-
-### Requirements
+## Requirements
 
 - Abaqus 2020 or later
 - Intel Fortran 19.0+ or GNU Fortran 9.0+
-- Basic knowledge of Fortran programming
-- Familiarity with Abaqus FEA software
+- Fixed-format Fortran knowledge
 
-### Version
+## License
 
-- Current Version: 1.0
-- Last Updated: 2026-03-20
-
-### License
-
-This skill library is provided for educational and research purposes.
+Provided for educational and research purposes under MIT License.
 
 ---
 
-## 中文
+<a name="中文"></a>
 
-### 概述
+## 概述
 
-这是一个全面的Abaqus用户子程序开发技能库。它提供AI辅助编程指导，包含标准化的Fortran代码模板、详细的理论说明和完整的工程示例。
+用于AI辅助Abaqus用户子程序开发的结构化Fortran知识库。涵盖UMAT/VUMAT、DLOAD/VDLOAD、DISP/VDISP、USDFLD、SIGINI/SDVINI、FRIC/VRIC、HETVAL/FILM和UEL/VUEL。
 
-### 功能特点
+**详细文档请参见 [`manual_zh.md`](manual_zh.md)** 和 **[AI生成指南](prompts/ai_guide.md)**。
 
-- **多种子程序类型**：UMAT、VUMAT、DLOAD、VDLOAD、DISP、VDISP、USDFLD、SIGINI、SDVINI、FRIC、VRIC、HETVAL、FILM、UEL、VUEL
-- **完整模板**：可直接使用的Fortran代码，适用于各种工程应用
-- **理论背景**：数学公式和物理模型
-- **最佳实践**：编码规范、调试技巧和性能优化
-- **故障排除指南**：常见错误和解决方案
+### 快速参考
 
-### 目录结构
+| 子程序 | 求解器 | 用途 | 参考 |
+|--------|-------|------|------|
+| UMAT | Standard | 自定义材料 | `reference/material/umat_*.md` |
+| VUMAT | Explicit | 自定义材料 | `reference/material/vumat_*.md` |
+| DLOAD | Standard | 分布载荷 | `reference/load/dload_moving.md` |
+| VDLOAD | Explicit | 分布载荷 | `reference/load/vdload_moving.md` |
+| DISP | Standard | 自定义边界 | `reference/boundary/disp_control.md` |
+| VDISP | Explicit | 自定义边界 | `reference/boundary/vdisp_control.md` |
+| USDFLD | 通用 | 场变量 | `reference/field/usdfld_spatial.md` |
+| SIGINI | 通用 | 初始应力 | `reference/initial/sigini_stress.md` |
+| SDVINI | 通用 | 初始状态变量 | `reference/initial/sdvini_state_variables.md` |
+| FRIC | Standard | 自定义摩擦 | `reference/friction/fric_contact.md` |
+| HETVAL | 热分析 | 热生成 | `reference/thermal/hetval_heat.md` |
+| FILM | 热分析 | 自定义对流 | `reference/thermal/film_convection.md` |
+| UEL | Standard | 自定义单元 | `reference/element/uel_spring.md` |
+
+### 快速上手
 
 ```
-abaqus_subroutine_skills/
-├── SKILL.md              # 主技能文件（Claude Code格式）
-├── manual.md             # 英文手册
-├── manual_zh.md          # 中文手册
-├── README.md             # 本文件
-├── README_zh.md          # 中文自述文件
-├── reference/            # 参考文档
-│   ├── material/         # 材料子程序
-│   ├── load/            # 载荷子程序
-│   ├── boundary/        # 边界子程序
-│   ├── field/           # 场变量子程序
-│   ├── initial/         # 初始条件子程序
-│   ├── thermal/         # 热分析子程序
-│   ├── friction/         # 摩擦子程序
-│   └── element/         # 自定义单元子程序
-└── official_examples/    # Abaqus官方示例
+1. 阅读 SKILL.md 了解整体功能
+2. 根据需求选择参考文件
+3. 复制并修改代码模板
+4. 编译：abaqus make library=subroutine.f
+5. 运行：abaqus job=jobname user=subroutine.f
 ```
 
-### 快速开始
+### 环境要求
 
-1. **阅读SKILL.md** 了解整体功能
-2. **选择参考文件** 根据您的需求（参见手册获取指导）
-3. **复制并修改** 代码模板以适应您的具体问题
-4. **编译测试** 按照参考文件中的说明进行
-
-### 需求
-
-- Abaqus 2020或更高版本
+- Abaqus 2020 或更高版本
 - Intel Fortran 19.0+ 或 GNU Fortran 9.0+
-- Fortran编程基础知识
-- 熟悉Abaqus有限元软件
-
-### 版本
-
-- 当前版本：1.0
-- 最后更新：2026-03-20
 
 ### 许可证
 
-本技能库仅供教育和研究目的使用。
+MIT License，仅供教育和研究使用。
