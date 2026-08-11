@@ -83,10 +83,10 @@ C
 C-----------------------------------------------------------------------
 C  Read material parameters
 C-----------------------------------------------------------------------
-      K1    = PROPS(1)     ! Linear stiffness (N/m)
-      K2    = PROPS(2)     ! Nonlinear stiffness coefficient (N/m³)
+      K1    = PROPS(1)     ! Linear stiffness (N/mm)
+      K2    = PROPS(2)     ! Nonlinear stiffness coefficient (N/mm³)
       F_MAX = PROPS(3)     ! Maximum bearing force (N)
-      U_SEP = PROPS(4)     ! Separation displacement (m)
+      U_SEP = PROPS(4)     ! Separation displacement (mm)
 C
 C-----------------------------------------------------------------------
 C  Calculate initial spring length
@@ -228,7 +228,7 @@ C
 C-----------------------------------------------------------------------
 C  Read damping coefficient
 C-----------------------------------------------------------------------
-      C_DAMP = PROPS(1)      ! Damping coefficient (N·s/m)
+      C_DAMP = PROPS(1)      ! Damping coefficient (N·s/mm)
 C
 C-----------------------------------------------------------------------
 C  Calculate direction cosines (assume initial direction)

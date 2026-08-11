@@ -58,7 +58,7 @@ C
 C-----------------------------------------------------------------------
 C  Geostress parameters
 C-----------------------------------------------------------------------
-      GAMMA = 20.0D3       ! Soil unit weight (N/m³)
+      GAMMA = 2.0D-5       ! Soil unit weight (N/mm³ = kN/m³ × 1e-6)
       K0    = 0.5D0        ! Coefficient of lateral earth pressure
       GROUND_LEVEL = 0.0D0 ! Ground surface elevation
 C
@@ -115,8 +115,8 @@ C-----------------------------------------------------------------------
       IF (LREBAR .EQ. 1) THEN
 C       Prestress parameters
         TENDON_FORCE = 1000.0D3    ! Prestress force (N)
-        AREA = 500.0D-6            ! Tendon cross-section area (m²)
-        SIGMA_PRESTRESS = TENDON_FORCE / AREA
+        AREA = 500.0D0             ! Tendon cross-section area (mm²)
+        SIGMA_PRESTRESS = TENDON_FORCE / AREA   ! 2000 MPa
 C
 C       Determine by tendon name
         IF (REBARN .EQ. 'TENDON_1') THEN
@@ -158,11 +158,11 @@ C
 C-----------------------------------------------------------------------
 C  Welding parameters
 C-----------------------------------------------------------------------
-      WELD_CENTER = 0.0D0          ! Weld center X coordinate
-      WELD_WIDTH  = 0.02D0         ! Weld width (m)
-      SIGMA_MAX   = 200.0D6        ! Maximum residual stress (Pa)
-      WIDTH_1     = 0.01D0         ! Heat affected zone width 1
-      WIDTH_2     = 0.05D0         ! Heat affected zone width 2
+      WELD_CENTER = 0.0D0          ! Weld center X coordinate (mm)
+      WELD_WIDTH  = 20.0D0         ! Weld width (mm)
+      SIGMA_MAX   = 200.0D0        ! Maximum residual stress (MPa)
+      WIDTH_1     = 10.0D0         ! Heat affected zone width 1 (mm)
+      WIDTH_2     = 50.0D0         ! Heat affected zone width 2 (mm)
 C
 C-----------------------------------------------------------------------
 C  Calculate distance to weld center

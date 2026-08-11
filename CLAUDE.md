@@ -2,44 +2,56 @@
 
 ## Project Identity
 
-This is a **Claude Code skills library for Abaqus secondary development** — structured knowledge organized as skills that Claude can use to generate production-quality Abaqus Python scripts and Fortran user subroutines.
+This is a **skills library for Abaqus secondary development** that follows the open
+[Agent Skills standard](https://agentskills.io) — structured knowledge organized as skills
+that AI agents (Claude Code, Codex, opencode, Gemini CLI, Cursor, etc.) can use to generate
+production-quality Abaqus Python scripts and Fortran user subroutines.
 
 - **Two modules**: Script Control (Python) + User Subroutines (Fortran)
 - **Bilingual**: English and Chinese (中文) documentation throughout
 - **Skill format**: Each skill = `SKILL.md` (overview + code snippets) + `reference/` (complete templates)
 - **Default unit system**: N-mm-MPa (length=mm, force=N, stress=MPa, density=tonne/mm³)
+- **Python target**: Abaqus 2023+ / Python 3.9+ (Abaqus ≤ 2022 Python 2.7 is NOT supported by the templates)
 
 ## Installation
 
-When a user asks about installing these skills, recommend the appropriate method:
+When a user asks about installing these skills, recommend the appropriate method for their agent:
 
-**Recommended** (any platform with Node.js):
+### Claude Code (any platform with Node.js)
+
 ```bash
 npx skills add jasonanewcoder/abaqus_skills
 ```
 
-**Git Clone** (macOS / Linux / Git Bash on Windows):
+or
+
 ```bash
 git clone https://github.com/jasonanewcoder/abaqus_skills.git ~/.claude/skills/abaqus_skills
 ```
 
-**curl** (macOS / Linux / Git Bash — no git needed):
+### Codex (OpenAI)
+
 ```bash
-curl -L https://github.com/jasonanewcoder/abaqus_skills/archive/refs/heads/main.tar.gz | tar xz -C ~/.claude/skills/
-mv ~/.claude/skills/abaqus_skills-main ~/.claude/skills/abaqus_skills
+git clone https://github.com/jasonanewcoder/abaqus_skills.git ~/.agents/skills/abaqus_skills
+# or, inside a repository:
+mkdir -p .agents/skills && git clone https://github.com/jasonanewcoder/abaqus_skills.git .agents/skills/abaqus_skills
 ```
 
-**Windows (PowerShell)**:
-```powershell
-Invoke-WebRequest -Uri "https://github.com/jasonanewcoder/abaqus_skills/archive/refs/heads/main.zip" -OutFile "$env:TEMP\abaqus_skills.zip"
-Expand-Archive -Path "$env:TEMP\abaqus_skills.zip" -DestinationPath "$env:USERPROFILE\.claude\skills\"
-Rename-Item "$env:USERPROFILE\.claude\skills\abaqus_skills-main" "$env:USERPROFILE\.claude\skills\abaqus_skills"
+### opencode / Gemini CLI / Cursor (repo-level)
+
+```bash
+# opencode
+git clone https://github.com/jasonanewcoder/abaqus_skills.git ~/.config/opencode/skills/abaqus_skills
+# Gemini CLI
+git clone https://github.com/jasonanewcoder/abaqus_skills.git ~/.gemini/skills/abaqus_skills
 ```
+
+Full details: see `AGENTS.md` and `docs/agent_installation.md` in this repository.
 
 **Manual** (any platform — no CLI required):
 1. Visit https://github.com/jasonanewcoder/abaqus_skills
 2. **Code → Download ZIP**
-3. Extract to `~/.claude/skills/abaqus_skills/`
+3. Extract to the skill folder of your agent (see table above)
 
 ## When to Use Each Module
 
@@ -147,6 +159,12 @@ from caeModules import *
 | Stress / Pressure / Elastic Modulus | MPa (N/mm²) | |
 | Density | tonne/mm³ | kg/m³ × 10⁻¹² |
 | Gravity | 9800 mm/s² | = 9.8 m/s² |
+| Thermal conductivity | mW/(mm·K) | = W/(m·K), value unchanged |
+| Specific heat | N·mm/(tonne·K) | J/(kg·K) × 10⁶ |
+| Convection coefficient | mW/(mm²·K) | W/(m²·K) × 10⁻³ |
+| Heat flux | mW/mm² | W/m² × 10⁻³ |
+| Heat generation | mW/mm³ | W/m³ × 10⁻³ |
+| Velocity | mm/s | = m/s × 10³ |
 
 ## Material Library Quick Lookup
 
@@ -174,42 +192,68 @@ Full library with Python helper function: `abaqus_scriptcontrol_skills/general/r
 ## Subroutine Rules
 
 - **Fortran fixed format**: cols 1-5 (labels), col 6 (continuation), cols 7-72 (code)
-- **Use `REAL*8`** for all floating-point variables
+- **Use `REAL*8`** for all floating-point variables; declare every variable explicitly —
+  `ABA_PARAM.INC` implicitly types I–N as INTEGER, so e.g. an undeclared `N_HARD = 0.3` truncates to 0
 - **Double-precision constants**: `1.0D0` not `1.0`
-- **Always include `INCLUDE 'ABA_PARAM.INC'`**
+- **Always include `INCLUDE 'ABA_PARAM.INC'`** (Standard) or `include 'vaba_param.inc'` (Explicit subroutines)
 - **Compile**: `abaqus make library=subroutine.f` or `abaqus job=jobname user=subroutine.f`
 
 ## Known Limitations
 
-- **Subroutine reference docs are incomplete** — currently 8 of 15 subroutine types have reference docs
-- **Fatigue/thermal/XFEM/composite SKILL.md files are thin** — overview only, no detailed reference docs
-- **No error handling** in code templates — add try/except for production use
-- **Python 2.7 compatibility** listed but untested; modern Abaqus (2020+) uses Python 3
+- **VRIC is the only supported subroutine type without a reference doc** (14 of 15 covered)
 - **No automated tests** — all templates should be validated in Abaqus before use
+- **No error handling** in most code templates — add try/except for production use
+- **Python 3.9+ only** (Abaqus 2023+); Python 2.7 (Abaqus ≤ 2022) is not supported
+- Unverified API items are tracked in `docs/ERRATA.md` (section 2) — check it before using those features
 
 ## File Organization
 
 ```
 abaqus_skills/
 ├── CLAUDE.md                        # ← You are here (AI entry point)
+├── AGENTS.md                        # Multi-agent entry point (Codex/opencode etc.)
+├── abaqus_agent_playbook.md         # End-to-end agent workflow for Abaqus simulation tasks
 ├── README.md                        # Human-readable overview
 ├── CONTRIBUTING.md                  # How to add new skills
+├── docs/
+│   ├── ERRATA.md                    # Fixed bugs + unverified API items
+│   └── agent_installation.md        # Install skills in every agent tool
+├── scripts/                         # Standalone Python 3 helper tools
+│   ├── unit_converter.py            # Unit-system conversion & validation
+│   ├── inp_checker.py               # Static check of .inp files
+│   ├── odb_extract.py               # CLI result extraction from .odb
+│   └── job_monitor.sh               # Submit + monitor + log capture
 ├── abaqus_scriptcontrol_skills/
 │   ├── manual.md                    # Detailed user manual with tutorials
 │   ├── prompts/ai_guide.md          # Extended AI generation guide
 │   ├── general/SKILL.md + reference/
 │   ├── static/SKILL.md + reference/
-│   ├── fatigue/SKILL.md
-│   ├── thermal/SKILL.md
-│   ├── xfem/SKILL.md
-│   └── composite/SKILL.md
-└── abaqus_subroutine_skills/
-    ├── SKILL.md                     # Subroutine overview
-    ├── manual.md                    # Detailed manual with tutorials
-    ├── reference/                   # Per-subroutine-type docs
-    └── official_examples/           # Raw Fortran examples from Abaqus docs
+│   ├── fatigue/SKILL.md + reference/
+│   ├── thermal/SKILL.md + reference/
+│   ├── xfem/SKILL.md + reference/
+│   └── composite/SKILL.md + reference/
+├── abaqus_subroutine_skills/
+│   ├── SKILL.md                     # Subroutine overview
+│   ├── manual.md                    # Detailed manual with tutorials
+│   ├── reference/                   # Per-subroutine-type docs
+│   └── official_examples/           # Raw Fortran examples from Abaqus docs
+└── cross_module_examples/           # End-to-end Python+Fortran+post tasks
 ```
 
 ## Related Skills in This Repo
 
 When a task requires both Python scripting AND Fortran subroutines (e.g., custom material model + Python setup script), load both module trees and coordinate.
+
+## Agent Execution Loop (Mandatory for Full Tasks)
+
+For any task that says "run the analysis" (not just "write the script"):
+
+1. **Clarify** — ask ≤4 questions (material, dimensions, load, analysis type); propose defaults
+2. **Generate** — per Script Generation Standard above; reference the appropriate SKILL.md tree
+3. **Run headless** — `abaqus cae noGUI=script.py` then `abaqus job=Job-1` (see `general/reference/headless_execution.md`)
+4. **Diagnose** — parse `.sta`/`.msg`/`.dat`; if errors → `error_diagnosis.md` decision table → fix → rerun
+5. **Verify** — extract results from `.odb` (`postprocess_odb.md`); compare against analytical/expected values (`verification.md`)
+6. **Report** — summary table: model summary, key results, verification status, warnings
+
+Tools `scripts/unit_converter.py`, `scripts/inp_checker.py`, `scripts/odb_extract.py`,
+`scripts/job_monitor.sh` exist for steps 3–5.

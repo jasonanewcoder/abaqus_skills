@@ -16,7 +16,7 @@ material = model.Material(name='Steel')
 material.Elastic(table=((210000.0, 0.3),))  # (E, nu)
 
 # Define density
-material.Density(table=((7.85e-09),))  # tonne/mm³
+material.Density(table=((7.85e-09,),))  # tonne/mm³
 
 # Define plasticity
 material.Plastic(table=((250.0, 0.0), (350.0, 0.1), (400.0, 0.2)))
@@ -52,7 +52,7 @@ rho = 7.85e-09     # tonne/mm³
 model = mdb.models['Model-1']
 material = model.Material(name='Steel')
 material.Elastic(table=((E, nu),))
-material.Density(table=((rho),))
+material.Density(table=((rho,),))
 
 # Create section
 section = model.HomogeneousSolidSection(
@@ -87,7 +87,7 @@ material = model.Material(name='Steel_EPP')
 
 # Elastic
 material.Elastic(table=((E, nu),))
-material.Density(table=((rho),))
+material.Density(table=((rho,),))
 
 # Plastic (ideal elastic-plastic)
 plastic_data = (
@@ -115,7 +115,7 @@ model = mdb.models['Model-1']
 material = model.Material(name='Steel_Bilinear')
 
 material.Elastic(table=((E, nu),))
-material.Density(table=((rho),))
+material.Density(table=((rho,),))
 
 # Bilinear plasticity
 epsilon_yield = yield_stress / E
@@ -146,7 +146,7 @@ model = mdb.models['Model-1']
 material = model.Material(name='Al6061-T6')
 
 material.Elastic(table=((E, nu),))
-material.Density(table=((rho),))
+material.Density(table=((rho,),))
 
 # Plastic data
 plastic_data = (
@@ -304,16 +304,16 @@ material = model.Material(name='Steel_Thermal')
 # Thermal conductivity
 # W/(m·K) → mW/(mm·K) = value unchanged
 thermal_conductivity = 45.0  # W/(m·K)
-material.Conductivity(table=((thermal_conductivity),))
+material.Conductivity(table=((thermal_conductivity,),))
 
 # Specific heat
-# J/(kg·K) → mJ/(tonne·K) = value × 10^9
+# J/(kg·K) → mJ/(tonne·K) = value × 10^6  (1 J = 1000 mJ, 1 kg = 1e-3 tonne)
 specific_heat = 460.0  # J/(kg·K)
-material.SpecificHeat(table=((specific_heat * 1e9),))
+material.SpecificHeat(table=((specific_heat * 1e6,),))
 
 # Thermal expansion coefficient
 expansion_coeff = 1.2e-05  # /°C
-material.Expansion(table=((expansion_coeff),))
+material.Expansion(table=((expansion_coeff,),))
 ```
 
 ### Temperature-Dependent Material Properties
@@ -393,7 +393,7 @@ def create_material_from_library(model, material_name, part):
     props = MATERIAL_LIBRARY[material_name]
     material = model.Material(name=material_name)
     material.Elastic(table=((props['E'], props['nu']),))
-    material.Density(table=((props['rho']),))
+    material.Density(table=((props['rho'],),))
     
     if 'yield' in props:
         material.Plastic(table=((props['yield'], 0.0),))

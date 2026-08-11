@@ -80,7 +80,7 @@ del model.sketches['__profile__']
 material = model.Material(name='Steel-Thermal')
 material.Conductivity(table=((k,),))
 # Note: Specific heat is NOT needed for steady-state analysis
-# material.SpecificHeat(table=((specific_heat * 1e9),))  # mJ/(tonne·K)
+# material.SpecificHeat(table=((specific_heat * 1e6,),))  # N·mm/(tonne·K)
 
 # Thermal expansion (for stress analysis later)
 expansion_coeff = 1.2e-05  # /°C
@@ -205,7 +205,7 @@ model.FilmCondition(
     createStepName='Step-1',
     surface=surface,
     definition=EMBEDDED_COEFF,
-    filmCoeff=15e-6,       # mW/(mm²·K) — note unit conversion
+    filmCoeff=15e-3,       # mW/(mm²·K) — W/(m²·K) × 1e-3
     sinkTemperature=20.0   # °C
 )
 
@@ -264,7 +264,7 @@ model.FilmCondition(
     createStepName='Thermal-Step',
     surface=surface,
     definition=EMBEDDED_COEFF,
-    filmCoeff=15e-6,
+    filmCoeff=15e-3,
     filmCoeffAmplitude='',
     sinkTemperature=20.0,
     sinkAmplitude='',

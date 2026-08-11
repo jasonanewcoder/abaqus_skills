@@ -1,7 +1,13 @@
 ---
 name: abaqus-script-control-static
-description: Abaqus static analysis — linear elastic small-deformation analysis and nonlinear large-deformation/plasticity/contact analysis. Builds on general skills for structural FEA.
-version: "1.0"
+description: >-
+  Abaqus static analysis: linear elastic small-deformation analysis and nonlinear
+  large-deformation / plasticity / contact analysis. Use when the task mentions:
+  static analysis, linear static, nonlinear static, large deformation, plastic
+  analysis, contact analysis, stress/strain/displacement, stiffness calculation,
+  strength check, 静力分析, 非线性分析, 接触分析. Requires abaqus-script-control-general
+  as foundation. Not for fatigue/thermal/XFEM/composite — use those skills.
+version: "1.1"
 capabilities:
   - linear_static_analysis
   - nonlinear_static_analysis
@@ -58,7 +64,7 @@ model.StaticStep(
 model.FieldOutputRequest(
     name='F-Output-1',
     createStepName='Static-Step',
-    variables=('S', 'E', 'U', 'RF', 'MISES')
+    variables=('S', 'E', 'U', 'RF')
 )
 ```
 

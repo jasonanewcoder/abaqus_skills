@@ -105,7 +105,7 @@ job.submit()
 ### Template 4: Restart Analysis
 
 ```python
-# 1. Enable restart
+# 1. Enable restart output on the step
 model.steps['Step-1'].Restart(
     frequency=10,
     numberIntervals=0,
@@ -118,14 +118,22 @@ job = mdb.Job(name='Job-Initial', model='Model-1')
 job.submit()
 job.waitForCompletion()
 
-# 3. Restart from specific increment
-restart_job = mdb.Job(
-    name='Job-Restart',
-    model='Model-1',
-    description='Restart analysis',
+# 3. Create a restart model and submit the restart job
+# NOTE: restart attributes belong to the MODEL, not the Job
+restart_model = mdb.Model(
+    name='Model-Restart',
+    objectToCopy=mdb.models['Model-1']
+)
+restart_model.setValues(
     restartJob='Job-Initial',
     restartStep='Step-1',
     restartIncrement=50
+)
+
+restart_job = mdb.Job(
+    name='Job-Restart',
+    model='Model-Restart',
+    description='Restart analysis from increment 50 of Job-Initial'
 )
 
 restart_job.submit()
@@ -139,16 +147,32 @@ global_job = mdb.Job(name='Global-Job', model='Global-Model')
 global_job.submit()
 global_job.waitForCompletion()
 
-# Submodel job
+# Submodel job — point the job at the global results file
+# NOTE: the driven boundary conditions must be defined IN THE MODEL
+# via SubmodelBC referencing the global step; here only the job link is set.
 submodel_job = mdb.Job(
     name='Submodel-Job',
     model='Submodel-Model',
     description='Submodel analysis',
-    submodel=True,
-    submodelJob='Global-Job'
+    globalModel='Global-Job'
 )
 
 submodel_job.submit()
+```
+
+The corresponding model-level submodel boundary condition (must exist in `Submodel-Model`):
+
+```python
+# Submodel BC on the driven boundary (defined in the Submodel model)
+model.SubmodelBC(
+    name='Submodel-BC',
+    createStepName='Initial',
+    region=driven_boundary_region,
+    dof=(1, 2, 3),
+    globalStep='Step-1',
+    globalIncrement=0,
+    submodel='Global'
+)
 ```
 
 ### Template 6: Generate Input File Only

@@ -123,7 +123,7 @@ model.StaticStep(
 model.FieldOutputRequest(
     name='F-Output-1',
     createStepName='Static-Load',
-    variables=('S', 'E', 'U', 'MISES')
+    variables=('S', 'E', 'U')
 )
 
 # ========== 6. Boundary Conditions ==========

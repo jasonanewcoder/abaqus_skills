@@ -341,7 +341,7 @@ part.CutRevolve(
 )
 
 # Sweep cut
-part.CutSweep(pathEdge=path_edge, sketch=sketch)
+part.CutSweep(path=path_edge, sketch=sketch)
 ```
 
 ### Filleting and Chamfering

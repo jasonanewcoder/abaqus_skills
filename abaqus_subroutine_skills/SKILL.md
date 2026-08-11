@@ -1,7 +1,16 @@
 ---
 name: abaqus-subroutine-development
-description: Abaqus user subroutine development in Fortran — UMAT/VUMAT custom materials, DLOAD/VDLOAD loads, DISP/VDISP boundaries, USDFLD fields, SIGINI/SDVINI initial conditions, FRIC/VRIC friction, HETVAL/FILM thermal, UEL/VUEL custom elements.
-version: "1.0"
+description: >-
+  Abaqus Fortran user subroutine development: UMAT/VUMAT/CREEP custom materials,
+  UMATHT thermal constitutive, DLOAD/VDLOAD/DFLUX loads & moving heat sources,
+  DISP/VDISP boundaries, USDFLD fields, ORIENT orientation, SIGINI/SDVINI initial
+  conditions, FRIC friction, HETVAL/FILM thermal, UEL/VUEL custom elements,
+  UAMP amplitudes, UEXTERNALDB job I/O, URDFIL results filtering. Use when the
+  task mentions: UMAT, VUMAT, user subroutine, custom material, DLOAD, DFLUX,
+  welding heat source, USDFLD, SIGINI, UEL, Fortran subroutine, 子程序, 用户材料.
+  Fixed-format Fortran with ABA_PARAM.INC / vaba_param.inc, REAL*8. Not for pure
+  Python scripting — use abaqus-script-control-general.
+version: "1.1"
 capabilities:
   - custom_material_model
   - distributed_load_definition
@@ -25,7 +34,7 @@ constraints:
   - "Fixed-format Fortran (cols 1-5 labels, col 6 continuation, cols 7-72 code)"
   - "Always include INCLUDE 'ABA_PARAM.INC'"
   - "Use REAL*8 for all floating-point variables"
-  - "Reference documentation covers 8 of 15 subroutine types — check availability"
+  - "Reference documentation covers most subroutine types — check `reference/` for availability"
 ---
 
 # Abaqus Subroutine Development Skill
@@ -38,13 +47,20 @@ This skill provides AI-assisted programming guidance for developing Abaqus user 
 
 - Generate UMAT (User Material) subroutines for custom constitutive models
 - Generate VUMAT subroutines for explicit dynamic analysis
+- Generate CREEP subroutines for creep and viscoplasticity
+- Generate UMATHT subroutines for thermal constitutive behavior
 - Generate DLOAD/VDLOAD subroutines for distributed moving loads
+- Generate DFLUX subroutines for moving heat sources (welding)
+- Generate UAMP subroutines for custom load amplitudes (control laws)
 - Generate DISP/VDISP subroutines for custom displacement boundary conditions
 - Generate USDFLD subroutines for spatially varying field variables
+- Generate ORIENT subroutines for material orientation
 - Generate SIGINI subroutines for initial stress conditions
-- Generate FRIC/VRIC subroutines for custom friction models
+- Generate FRIC subroutines for custom friction models
 - Generate HETVAL subroutines for heat generation
 - Generate UEL/VUEL subroutines for custom elements
+- Generate UEXTERNALDB subroutines for data file management
+- Generate URDFIL subroutines for results file monitoring
 
 ## Supported Subroutine Types
 
@@ -52,24 +68,25 @@ This skill provides AI-assisted programming guidance for developing Abaqus user 
 |------------|--------------|---------|
 | UMAT | Standard (Implicit) | Custom material constitutive |
 | VUMAT | Explicit | Custom material constitutive |
+| CREEP | Standard | Creep / viscoplastic material |
+| UMATHT | Standard (Thermal) | Custom thermal constitutive |
 | DLOAD | Standard | Distributed load definition |
 | VDLOAD | Explicit | Distributed load definition |
+| DFLUX | Thermal | Moving heat source / heat flux |
 | DISP | Standard | Custom displacement boundary |
 | VDISP | Explicit | Custom displacement boundary |
 | USDFLD | General | User-defined field variables |
+| ORIENT | General | Material orientation |
 | SIGINI | General | Initial stress definition |
 | SDVINI | General | Initial state variables |
 | FRIC | Standard | Custom friction model |
-| VRIC | Explicit | Custom friction model |
 | HETVAL | Thermal | Heat generation |
 | FILM | Thermal | Custom convection |
 | UEL | Standard | Custom element |
 | VUEL | Explicit | Custom element |
-| VRIC | Explicit | Custom friction model |
-| HETVAL | Thermal | Heat generation |
-| FILM | Thermal | Custom convection |
-| UEL | Standard | Custom element |
-| VUEL | Explicit | Custom element |
+| UAMP | General | User amplitude (control) |
+| UEXTERNALDB | General | Job I/O management |
+| URDFIL | General | Results file filtering |
 
 ## Usage
 
@@ -88,13 +105,20 @@ Based on requirements, select the corresponding reference file:
 | Requirement | Recommended Reference |
 |------------|---------------------|
 | Custom material model | `reference/material/umat_*.md` or `reference/material/vumat_*.md` |
-| Moving/variable load | `reference/load/dload_moving.md` |
+| Creep / high-temperature material | `reference/material/creep_material.md` |
+| Thermal constitutive model (phase change, nonlinear) | `reference/thermal/umatht_thermal.md` |
+| Moving/variable load | `reference/load/dload_moving.md` (Standard) / `vdload_moving.md` (Explicit) |
+| Welding / moving heat source | `reference/thermal/dflux_welding.md` |
+| Custom load amplitude / control | `reference/load/uamp_amplitude.md` |
 | Vibration/displacement control | `reference/boundary/disp_control.md` |
 | Spatially inhomogeneous material | `reference/field/usdfld_spatial.md` |
+| Material orientation (composites etc.) | `reference/field/orient_direction.md` |
 | Geostress/residual stress | `reference/initial/sigini_stress.md` |
 | Tribology problems | `reference/friction/fric_contact.md` |
 | Thermal-mechanical coupling | `reference/thermal/hetval_heat.md` + UMAT |
 | Special connection elements | `reference/element/uel_spring.md` |
+| Run-time monitoring / custom abort | `reference/output/urdfil_results.md` |
+| Shared data files / job management | `reference/utility/uexternaldb_mgmt.md` |
 
 ### Step 3: Understand the Skill File
 
@@ -286,7 +310,8 @@ SUBROUTINE USDFLD(FIELD,STATEV,PNEWDT,DIRECT,T,CELENT,
 
 ## Version Information
 
-- Skill Version: 1.0
-- Compatible Abaqus Version: 2020 and above
+- Skill Version: 1.1
+- Compatible Abaqus Version: 2023 and above (Python 3.9+)
 - Fortran Compiler: Intel Fortran 19.0+ or GNU Fortran 9.0+
-- Last Updated: 2026-03-20
+- Last Updated: 2026-08
+- Errata: see `docs/ERRATA.md` for fixed bugs and unverified API items

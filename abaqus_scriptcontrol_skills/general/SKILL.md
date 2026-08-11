@@ -1,7 +1,16 @@
 ---
 name: abaqus-script-control-general
-description: Abaqus Python scripting fundamentals — geometric modeling, material definition, step setup, boundary conditions & loads, mesh generation, and job submission. Foundation skill for all Abaqus analysis types.
-version: "1.0"
+description: >-
+  Abaqus Python scripting fundamentals: geometric modeling (part/sketch/extrude),
+  material & section definition, steps & output requests, boundary conditions &
+  loads, mesh generation, job submission, and the headless agent loop
+  (noGUI run → .sta/.msg diagnosis → ODB post-processing → verification).
+  Foundation skill for ANY Abaqus analysis (static, fatigue, thermal, XFEM,
+  composite). Use when the task mentions: create model, define material, apply
+  BC/load, generate mesh, submit job, run abaqus headless, read .odb results,
+  fix convergence, 建模仿真, 材料定义, 网格, 提交任务, 后处理. Not for custom
+  Fortran subroutines — use abaqus-subroutine-development for UMAT/DLOAD etc.
+version: "1.1"
 capabilities:
   - geometric_modeling
   - material_definition
@@ -22,7 +31,7 @@ triggers:
 constraints:
   - "Requires abaqusConstants and caeModules imports (Abaqus CAE environment)"
   - "Default unit system is N-mm-MPa"
-  - "Python 2.7/3.x depending on Abaqus version"
+  - "Python 3.9+ (Abaqus 2023+); no Python 2.7 syntax"
 ---
 
 # Abaqus General Skills
@@ -32,6 +41,18 @@ constraints:
 This skill module provides core general skills for Abaqus Python scripting development, including geometric modeling, material definition, step setup, boundary conditions and loads, mesh generation, and job submission. These skills form the foundation for any type of Abaqus analysis.
 
 ## Skills List
+
+### 0. Agent Execution Loop (read first when RUNNING analyses)
+
+For tasks that run a simulation (not just write code), follow the closed loop in
+`abaqus_agent_playbook.md`: clarify → generate → **run headless** → **diagnose** →
+iterate → **verify** → report.
+
+- [`reference/headless_execution.md`](reference/headless_execution.md) — `abaqus cae noGUI=`, `abaqus job=`, `.sta/.msg/.dat` parsing, exit codes
+- [`reference/error_diagnosis.md`](reference/error_diagnosis.md) — symptom → cause → fix decision tables (convergence, zero pivot, hourglass, NaN...)
+- [`reference/postprocess_odb.md`](reference/postprocess_odb.md) — read `.odb`, extract S/U/RF, compute Mises, energy diagnostics
+- [`reference/verification.md`](reference/verification.md) — analytical benchmarks, mesh convergence, energy balance
+- [`reference/interaction_contact.md`](reference/interaction_contact.md) — general contact, contact pairs, tie/coupling/MPC
 
 ### 1. Geometric Modeling (`skill_modeling`)
 
@@ -77,7 +98,7 @@ Define material properties and create section properties, assigning materials to
 # Create isotropic linear elastic material
 material = model.Material(name='Steel')
 material.Elastic(table=((210000.0, 0.3),))  # E, nu
-material.Density(table=((7.85e-09),))       # tonne/mm³
+material.Density(table=((7.85e-09,),))       # tonne/mm³
 
 # Create section and assign
 section = model.HomogeneousSolidSection(name='Section-1', material='Steel')
@@ -116,7 +137,7 @@ model.StaticStep(
 model.FieldOutputRequest(
     name='F-Output-1',
     createStepName='Static-Step',
-    variables=('S', 'E', 'U', 'RF', 'MISES')
+    variables=('S', 'E', 'U', 'RF')
 )
 ```
 

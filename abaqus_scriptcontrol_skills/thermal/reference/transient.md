@@ -57,7 +57,7 @@ block_height = 10.0    # mm
 k = 45.0               # W/(m·K) — thermal conductivity
 cp = 460.0             # J/(kg·K) — specific heat
 rho = 7.85e-09         # tonne/mm³ — density
-cp_abaqus = cp * 1e9   # mJ/(tonne·K) — Abaqus unit
+cp_abaqus = cp * 1e6   # N·mm/(tonne·K) — Abaqus unit (J/(kg·K) × 1e6)
 
 # Mechanical properties
 E = 210000.0           # MPa
@@ -68,7 +68,7 @@ yield_stress = 235.0   # MPa
 # Thermal BC
 temp_initial = 20.0    # °C, initial temperature
 temp_hot = 500.0       # °C, applied temperature
-h_conv = 15e-6         # mW/(mm²·K) — natural convection
+h_conv = 15e-3         # mW/(mm²·K) — natural convection (W/(m²·K) × 1e-3)
 
 # Time parameters
 total_time = 600.0     # s, total heating time
@@ -269,7 +269,7 @@ stress_model.StaticStep(
 stress_model.FieldOutputRequest(
     name='Stress-Output',
     createStepName='Thermal-Stress',
-    variables=('S', 'E', 'U', 'MISES', 'TEMP')
+    variables=('S', 'E', 'U', 'TEMP')
 )
 
 # Boundary conditions (prevent rigid body motion)

@@ -69,8 +69,8 @@ C-----------------------------------------------------------------------
       MU_S = 0.5D0           ! Static friction coefficient
       MU_K = 0.3D0           ! Kinetic friction coefficient (medium speed)
       MU_F = 0.05D0          ! Hydrodynamic friction coefficient (high speed)
-      V_CRIT = 0.001D0       ! Static-kinetic friction transition velocity (m/s)
-      V_TRANSITION = 1.0D0   ! Mixed to hydrodynamic transition velocity (m/s)
+      V_CRIT = 1.0D0         ! Static-kinetic transition velocity (mm/s = 0.001 m/s)
+      V_TRANSITION = 1000.0D0   ! Mixed-to-hydrodynamic transition velocity (mm/s = 1 m/s)
 C
 C-----------------------------------------------------------------------
 C  Get slip velocity
@@ -194,7 +194,7 @@ C  Parameters
 C-----------------------------------------------------------------------
       MU_0 = 0.5D0           ! Initial friction coefficient
       MU_MIN = 0.2D0         ! Minimum friction coefficient (after complete wear)
-      S_CRIT = 1.0D0         ! Critical cumulative slip distance (m)
+      S_CRIT = 1000.0D0      ! Critical cumulative slip distance (mm)
 C
 C-----------------------------------------------------------------------
 C  Read cumulative slip distance from state variables

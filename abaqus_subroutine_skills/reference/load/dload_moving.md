@@ -59,12 +59,13 @@ C
       REAL*8 GAUSS_CENTER, GAUSS_WIDTH, LOAD_SHAPE
 C
 C-----------------------------------------------------------------------
-C  Load parameters (should be passed via PROPS or COMMON block)
+C  Load parameters (DLOAD has no PROPS argument — pass via COMMON
+C  block shared with UEXTERNALDB/UMAT, or edit the values here)
 C-----------------------------------------------------------------------
-      F0 = 1000.0D0          ! Load peak (N/m² or N/m)
-      V  = 10.0D0            ! Moving speed (m/s)
-      X0 = 0.0D0             ! Initial position
-      GAUSS_WIDTH = 0.1D0    ! Load distribution width
+      F0 = 1000.0D0          ! Load peak (N/mm² for surface pressure)
+      V  = 10.0D0            ! Moving speed (mm/s — model units!)
+      X0 = 0.0D0             ! Initial position (mm)
+      GAUSS_WIDTH = 0.1D0    ! Load distribution width (mm)
 C
 C-----------------------------------------------------------------------
 C  Calculate current load center position
@@ -108,12 +109,12 @@ C
 C-----------------------------------------------------------------------
 C  Load parameters
 C-----------------------------------------------------------------------
-      F0 = 1000.0D0          ! Load peak
-      R = 1.0D0              ! Circle radius
+      F0 = 1000.0D0          ! Load peak (N/mm²)
+      R = 1.0D0              ! Circle radius (mm)
       OMEGA = 1.0D0          ! Angular velocity (rad/s)
-      X_CENTER = 0.0D0       ! Circle center X
-      Y_CENTER = 0.0D0       ! Circle center Y
-      LOAD_RADIUS = 0.05D0   ! Load application radius
+      X_CENTER = 0.0D0       ! Circle center X (mm)
+      Y_CENTER = 0.0D0       ! Circle center Y (mm)
+      LOAD_RADIUS = 0.05D0   ! Load application radius (mm)
 C
 C-----------------------------------------------------------------------
 C  Calculate load center position
@@ -171,14 +172,25 @@ C
 C-----------------------------------------------------------------------
 C  Parameters
 C-----------------------------------------------------------------------
-      F0 = 1000.0D0
-      V = 5.0D0
-      LOAD_SIZE = 0.02D0
+      F0 = 1000.0D0          ! Load peak (N/mm²)
+      V = 5.0D0              ! Moving speed (mm/s)
+      LOAD_SIZE = 0.02D0     ! Load footprint radius (mm)
       T = TIME(2)
+C
+C  Guard: path must be initialized before use
+      IF (NSEG .LT. 2) THEN
+        F = 0.0D0
+        RETURN
+      END IF
 C
 C-----------------------------------------------------------------------
 C  Calculate current arc length position along path
 C-----------------------------------------------------------------------
+C  Total path length (sum of segment lengths)
+      TOTAL_PATH = 0.0D0
+      DO I = 1, NSEG-1
+        TOTAL_PATH = TOTAL_PATH + SEG_LEN(I)
+      END DO
       S = V * T
       IF (S .GT. TOTAL_PATH) S = TOTAL_PATH
 C
@@ -226,12 +238,10 @@ C
 ## Abaqus Input File Example
 
 ```abaqus
-** Moving load definition
-*Dload, amplitude=MoveLoad
+** Moving load definition — the time history is defined INSIDE the
+** DLOAD subroutine via TIME; no amplitude is required.
+*Dload
 Surface-1, P, 1.0
-** 
-** Need amplitude definition for load time history
-*Amplitude, name=MoveLoad, definition=USER
 ```
 
 ## Notes
@@ -239,7 +249,7 @@ Surface-1, P, 1.0
 1. **Mesh Density**: Moving load region needs sufficiently dense mesh
 2. **Time Step**: In explicit analysis, load moving speed affects stability
 3. **Smooth Transition**: Use Gaussian or cosine distribution to avoid stress concentration
-4. **Multiple Loads**: Can distinguish multiple moving loads via JLTYPE
+4. **Multiple Loads**: Can distinguish multiple moving loads via JLTYP
 
 ## Differences from VDLOAD
 

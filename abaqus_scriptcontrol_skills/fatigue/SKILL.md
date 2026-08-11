@@ -1,7 +1,13 @@
 ---
 name: abaqus-script-control-fatigue
-description: Abaqus fatigue analysis — high-cycle fatigue (S-N curve) and low-cycle fatigue life prediction under cyclic loading.
-version: "1.0"
+description: >-
+  Abaqus fatigue analysis: high-cycle fatigue (S-N curve, mean-stress correction,
+  Miner's rule) and low-cycle fatigue (Coffin-Manson strain-life, cyclic
+  elasto-plastic analysis, fe-safe workflow). Use when the task mentions: fatigue
+  analysis, fatigue life, S-N curve, cyclic loading, high-cycle fatigue, low-cycle
+  fatigue, damage accumulation, 疲劳分析, 疲劳寿命. Requires
+  abaqus-script-control-general as foundation.
+version: "1.1"
 capabilities:
   - high_cycle_fatigue
   - low_cycle_fatigue
@@ -18,7 +24,7 @@ triggers:
   - "疲劳寿命"
 constraints:
   - "Requires general/SKILL.md and static/SKILL.md as foundation"
-  - "Reference documentation is currently limited — expand for production use"
+  - "Reference docs: high_cycle.md + low_cycle.md (S-N and strain-life)"
   - "Fatigue analysis requires material S-N curve data"
 ---
 
@@ -75,6 +81,7 @@ cycles_to_failure = int(10**log_2N / 2)
 ## Detailed Reference
 
 - [High-Cycle Fatigue Analysis](reference/high_cycle.md) — S-N curve, mean stress correction, Miner's damage accumulation
+- [Low-Cycle Fatigue & Strain-Life](reference/low_cycle.md) — Coffin-Manson, cyclic elasto-plastic analysis, fe-safe workflow
 
 ## Related Skills
 

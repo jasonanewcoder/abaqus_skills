@@ -332,17 +332,17 @@ step_obj.setValues(
     solutionTechnique=FULL_NEWTON,
     convertSDI=CONVERT_SDI_OFF,
     matrixSolver=DIRECT,
-    matrixStorage=SYMMETRIC,
-    matrixStorageFreq=1
+    matrixStorage=SYMMETRIC
 )
 
 # Set convergence control
+# Note: line-search iteration count is controlled via *SOLUTION CONTROLS,
+# not via StaticStep parameters.
 step_obj.setValues(
     initialInc=0.1,
     minInc=1e-08,
     maxInc=0.5,
     maxNumInc=1000,
-    maxLineSearchIterations=20,
     extrapolation=LINEAR
 )
 ```

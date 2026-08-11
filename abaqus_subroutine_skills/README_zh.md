@@ -71,15 +71,16 @@ abaqus_subroutine_skills/
 
 ## 需求
 
-- Abaqus 2020或更高版本
+- Abaqus 2023或更高版本（Python 3.9+）
 - Intel Fortran 19.0+ 或 GNU Fortran 9.0+
 - Fortran编程基础知识
 - 熟悉Abaqus有限元软件
 
 ## 版本信息
 
-- 当前版本：1.0
-- 最后更新：2026-03-20
+- 当前版本：1.1
+- 最后更新：2026-08
+- 勘误：见 `docs/ERRATA.md`（已修复的错误与未验证的 API 项）
 
 ## 许可证
 

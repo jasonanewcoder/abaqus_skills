@@ -90,7 +90,7 @@ model.StaticStep(
 model.FieldOutputRequest(
     name='F-Output-1',
     createStepName='Tensile-Step',
-    variables=('S', 'E', 'U', 'RF', 'MISES', 'FV'),
+    variables=('S', 'E', 'U', 'RF', 'FV'),
     frequency=1
 )
 

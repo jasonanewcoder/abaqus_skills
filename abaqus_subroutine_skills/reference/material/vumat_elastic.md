@@ -28,7 +28,7 @@ This skill guides AI to generate linear elastic material VUMAT subroutines for A
 | Jacobian Matrix | Required | Not required |
 | Deformation Gradient | Provided | Provided |
 | Stress Update | Incremental form | Based on deformation gradient |
-| Stability | Unconditional (convergence前提) | Conditional (CFL condition) |
+| Stability | Unconditional (implicit convergence) | Conditional (CFL condition) |
 
 ## VUMAT Interface Definition
 
@@ -60,14 +60,17 @@ subroutine vumat(
 ### Stress Update Based on Jaumann Rate
 
 ```
-σ^∇ = C : D
-σ_{n+1} = σ_n + Δt * σ^∇ + Ω·σ_n - σ_n·Ω
+σᵗʳᵒᵗ = σₙ + W·σₙ − σₙ·W        (rotation part; W built from relSpinInc)
+σₙ₊₁ = σᵗʳᵒᵗ + C : Δε             (elastic increment)
 ```
 
 Where:
-- D is deformation rate tensor (strain increment/Δt)
-- Ω is spin tensor
-- σ^∇ is Jaumann rate
+- Δε is the strain increment tensor
+- W is the spin (incremental rotation) — the sign convention in the code
+  below matches the official Abaqus example, do NOT invert it
+- Abaqus/Explicit stores the deviatoric stress in `stressOld`/`stressNew`;
+  the hydrostatic pressure is handled by the element, so VUMAT must add
+  `trace/3` before rotating the stress (see code below)
 
 ## Fortran Code
 
@@ -102,135 +105,107 @@ C
 C
       character*80 cmname
 C
+      parameter(one = 1.0d0, two = 2.0d0, half = 0.5d0,
+     1          three = 3.0d0)
+C
 C  Local variables
-      integer i, j, k, nDirDim, nShem, nblock
-      real*8 E, nu, lambda, twoMu, mu, bulkMod
-      real*8 traceEps, stressRate(6), spin(3,3)
-      real*8 stressRot(3,3), stressTemp(3,3)
-      real*8 F(3,3), detF, J, FInv(3,3)
-      real*8 C(6,6)
+      real*8 e, xnu, alamda, amu, trace, traceStrainInc
+      real*8 sigOld1, sigOld2, sigOld3, sigOld4, sigOld5, sigOld6
+      real*8 sigNew1, sigNew2, sigNew3, sigNew4, sigNew5, sigNew6
+      integer i
 C
 C-----------------------------------------------------------------------
-C  Read material parameters
+C  Material parameters
 C-----------------------------------------------------------------------
-      E        = props(1)    ! Young's modulus
-      nu       = props(2)    ! Poisson's ratio
+      e    = props(1)    ! Young's modulus
+      xnu  = props(2)    ! Poisson's ratio
+C
+C  Lame constants
+      alamda = xnu*e / ((one+xnu)*(one-two*xnu))
+      amu    = half*e / (one+xnu)
 C
 C-----------------------------------------------------------------------
-C  Calculate elastic constants
+C  Update stresses using Jaumann rate
+C  NOTE: Abaqus/Explicit passes the DEVIATORIC stress to VUMAT; the
+C  hydrostatic pressure is handled by the element formulation. The
+C  trace/3 correction below recovers the total stress, exactly as in
+C  the official Abaqus example (official_examples/vumat/).
 C-----------------------------------------------------------------------
-      mu       = E / (2.0D0*(1.0D0+nu))      ! Shear modulus
-      twoMu    = 2.0D0*mu
-      lambda   = E*nu / ((1.0D0+nu)*(1.0D0-2.0D0*nu))
-      bulkMod  = lambda + twoMu/3.0D0
+      do 100 i = 1, nblock
 C
-C-----------------------------------------------------------------------
-C  Assemble elasticity matrix C (6x6)
-C-----------------------------------------------------------------------
-      do i = 1, 6
-        do j = 1, 6
-          C(i,j) = 0.0D0
-        end do
-      end do
+C       Recover total stress from stored deviatoric stress
+        trace = stressOld(i,1) + stressOld(i,2) + stressOld(i,3)
+        sigOld1 = stressOld(i,1) + trace/three
+        sigOld2 = stressOld(i,2) + trace/three
+        sigOld3 = stressOld(i,3) + trace/three
+        sigOld4 = stressOld(i,4)
+        sigOld5 = stressOld(i,5)
+        sigOld6 = stressOld(i,6)
 C
-      do i = 1, ndir
-        do j = 1, ndir
-          C(i,j) = lambda
-        end do
-        C(i,i) = lambda + twoMu
-      end do
-      do i = ndir+1, ndir+nshr
-        C(i,i) = mu
-      end do
-C
-C-----------------------------------------------------------------------
-C  Loop over each integration point
-C-----------------------------------------------------------------------
-      do k = 1, nblock
-C
-C       Calculate stress rate
-        do i = 1, ndir+nshr
-          stressRate(i) = 0.0D0
-          do j = 1, ndir+nshr
-            stressRate(i) = stressRate(i) + C(i,j)*strainInc(k,j)
-          end do
-        end do
-C
-C       Stress rotation (Jaumann rate)
-C       Build spin tensor
+C       Apply rotation (Jaumann rate) - sign convention follows the
+C       official Abaqus example exactly.
+C       NOTE: component indices assume ndir=3 (3D, plane strain,
+C       axisymmetric). For plane stress (ndir=2, nshr=1) the shear
+C       component is stored at index 3 instead of 4.
         if (nshr .eq. 1) then
-          spin(1,2) = relSpinInc(k,1)
-          spin(2,1) = -relSpinInc(k,1)
-        else if (nshr .eq. 3) then
-          spin(1,2) = relSpinInc(k,1)
-          spin(1,3) = relSpinInc(k,2)
-          spin(2,3) = relSpinInc(k,3)
-          spin(2,1) = -relSpinInc(k,1)
-          spin(3,1) = -relSpinInc(k,2)
-          spin(3,2) = -relSpinInc(k,3)
-        end if
-        spin(1,1) = 0.0D0
-        spin(2,2) = 0.0D0
-        spin(3,3) = 0.0D0
-C
-C       Convert old stress to 3x3 matrix
-        stressTemp(1,1) = stressOld(k,1)
-        stressTemp(2,2) = stressOld(k,2)
-        stressTemp(3,3) = stressOld(k,3)
-        if (nshr .eq. 1) then
-          stressTemp(1,2) = stressOld(k,4)
-          stressTemp(2,1) = stressOld(k,4)
-          stressTemp(1,3) = 0.0D0
-          stressTemp(3,1) = 0.0D0
-          stressTemp(2,3) = 0.0D0
-          stressTemp(3,2) = 0.0D0
+          sigNew1 = sigOld1 - sigOld4*relSpinInc(i,1)*two
+          sigNew2 = sigOld2 + sigOld4*relSpinInc(i,1)*two
+          sigNew3 = sigOld3
+          sigNew4 = sigOld4 + (sigOld1-sigOld2)*relSpinInc(i,1)
         else
-          stressTemp(1,2) = stressOld(k,4)
-          stressTemp(2,1) = stressOld(k,4)
-          stressTemp(1,3) = stressOld(k,5)
-          stressTemp(3,1) = stressOld(k,5)
-          stressTemp(2,3) = stressOld(k,6)
-          stressTemp(3,2) = stressOld(k,6)
+          sigNew1 = sigOld1 - sigOld4*relSpinInc(i,1)*two
+     1                  + sigOld5*relSpinInc(i,2)*two
+          sigNew2 = sigOld2 + sigOld4*relSpinInc(i,1)*two
+     1                  - sigOld6*relSpinInc(i,3)*two
+          sigNew3 = sigOld3 - sigOld5*relSpinInc(i,2)*two
+     1                  + sigOld6*relSpinInc(i,3)*two
+          sigNew4 = sigOld4 + (sigOld1-sigOld2)*relSpinInc(i,1)
+     1                  - sigOld6*relSpinInc(i,2)
+     2                  - sigOld5*relSpinInc(i,3)
+          sigNew5 = sigOld5 + sigOld4*relSpinInc(i,2)
+     1                  + (sigOld1-sigOld3)*relSpinInc(i,2)
+     2                  - sigOld6*relSpinInc(i,1)
+          sigNew6 = sigOld6 + sigOld4*relSpinInc(i,3)
+     1                  + (sigOld2-sigOld3)*relSpinInc(i,3)
+     2                  + sigOld5*relSpinInc(i,1)
         end if
 C
-C       Calculate rotated stress
-        do i = 1, 3
-          do j = 1, 3
-            stressRot(i,j) = stressTemp(i,j)
-            do i1 = 1, 3
-              stressRot(i,j) = stressRot(i,j) 
-     1                       + spin(i,i1)*stressTemp(i1,j)
-     2                       - stressTemp(i,i1)*spin(i1,j)
-            end do
-          end do
-        end do
-C
-C       Update stress
-        stressNew(k,1) = stressRot(1,1) + stressRate(1)
-        stressNew(k,2) = stressRot(2,2) + stressRate(2)
-        stressNew(k,3) = stressRot(3,3) + stressRate(3)
-        if (nshr .ge. 1) then
-          stressNew(k,4) = stressRot(1,2) + stressRate(4)
+C       Elastic stress increment from strain increment
+        traceStrainInc = strainInc(i,1) + strainInc(i,2)
+     1                 + strainInc(i,3)
+        sigNew1 = sigNew1 + alamda*traceStrainInc
+     1                    + two*amu*strainInc(i,1)
+        sigNew2 = sigNew2 + alamda*traceStrainInc
+     1                    + two*amu*strainInc(i,2)
+        sigNew3 = sigNew3 + alamda*traceStrainInc
+     1                    + two*amu*strainInc(i,3)
+        sigNew4 = sigNew4 + amu*strainInc(i,4)
+        if (nshr .gt. 1) then
+          sigNew5 = sigNew5 + amu*strainInc(i,5)
+          sigNew6 = sigNew6 + amu*strainInc(i,6)
         end if
-        if (nshr .ge. 2) then
-          stressNew(k,5) = stressRot(1,3) + stressRate(5)
-          stressNew(k,6) = stressRot(2,3) + stressRate(6)
+C
+C       Store new stress
+        stressNew(i,1) = sigNew1
+        stressNew(i,2) = sigNew2
+        stressNew(i,3) = sigNew3
+        stressNew(i,4) = sigNew4
+        if (nshr .gt. 1) then
+          stressNew(i,5) = sigNew5
+          stressNew(i,6) = sigNew6
         end if
 C
 C       Update internal energy
-        enerInternNew(k) = enerInternOld(k)
-        do i = 1, ndir+nshr
-          enerInternNew(k) = enerInternNew(k) 
-     1                     + 0.5D0*(stressOld(k,i)+stressNew(k,i))
-     2                     *strainInc(k,i)/density(k)
-        end do
+        enerInternNew(i) = enerInternOld(i)
+     1    + half * (
+     2      (stressOld(i,1)+stressNew(i,1))*strainInc(i,1) +
+     3      (stressOld(i,2)+stressNew(i,2))*strainInc(i,2) +
+     4      (stressOld(i,3)+stressNew(i,3))*strainInc(i,3) +
+     5      (stressOld(i,4)+stressNew(i,4))*strainInc(i,4) +
+     6      (stressOld(i,5)+stressNew(i,5))*strainInc(i,5) +
+     7      (stressOld(i,6)+stressNew(i,6))*strainInc(i,6) ) / density(i)
 C
-C       State variable update (if any)
-        do i = 1, nstatev
-          stateNew(k,i) = stateOld(k,i)
-        end do
-C
-      end do  ! end k loop
+ 100  continue
 C
       return
       end
@@ -241,11 +216,14 @@ C
 ```abaqus
 *Material, name=Elastic_VUMAT
 *Density
-7850.0
+7.85e-9
 *User Material, constants=2
-** E, NU
-210.e9, 0.3
+** E (MPa), NU
+210000.0, 0.3
 ```
+
+> Units follow the project standard (N-mm-MPa): density in tonne/mm³,
+> modulus in MPa. Do NOT use kg/m³ (7850.0) or Pa (210e9) here.
 
 ## Explicit Analysis Considerations
 
@@ -257,9 +235,9 @@ C
 ## Stability Check
 
 ```fortran
-C  Calculate wave speed (for stability check)
-waveSpeed = sqrt((bulkMod + 4.0D0*mu/3.0D0)/density(k))
-stableDt = charLength(k)/waveSpeed
+C  Calculate P-wave speed (for explicit stability check)
+      waveSpeed = sqrt((alamda + two*amu)/density(i))
+      stableDt  = charLength(i)/waveSpeed
 ```
 
 ## Extension Directions

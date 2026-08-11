@@ -1,7 +1,14 @@
 ---
 name: abaqus-script-control-thermal
-description: Abaqus thermal stress analysis — steady-state and transient heat transfer, sequential and fully-coupled thermal-mechanical analysis.
-version: "1.0"
+description: >-
+  Abaqus thermal analysis: steady-state and transient heat transfer, convection,
+  radiation, and sequential / fully-coupled thermal-mechanical (thermal stress)
+  analysis, including welding heat input. Use when the task mentions: thermal
+  analysis, heat transfer, thermal stress, temperature field, thermal-mechanical
+  coupling, welding simulation, conduction, convection, 热分析, 热应力, 温度场.
+  Requires abaqus-script-control-general as foundation. Note N-mm-MPa unit
+  conversions (specific heat ×1e6).
+version: "1.1"
 capabilities:
   - steady_state_heat_transfer
   - transient_heat_transfer
@@ -20,8 +27,8 @@ triggers:
   - "温度场"
 constraints:
   - "Requires general/SKILL.md as foundation"
-  - "Thermal properties require unit conversion (specific heat: J/(kg·K) → mJ/(tonne·K) × 10^9)"
-  - "Reference documentation is limited — expand for production use"
+  - "Thermal properties require unit conversion (specific heat: J/(kg·K) → N·mm/(tonne·K) × 10^6)"
+  - "Reference docs: steady_state.md + transient.md (incl. welding)"
 ---
 
 # Abaqus Thermal Stress Analysis Skills
@@ -74,7 +81,7 @@ model.Temperature(
 | Physical Quantity | Original Unit | Abaqus Unit |
 |------------------|---------------|-------------|
 | Thermal Conductivity | W/(m·K) | W/(m·K) |
-| Specific Heat | J/(kg·K) | mJ/(tonne·K) × 10^9 |
+| Specific Heat | J/(kg·K) | N·mm/(tonne·K) × 10^6 |
 | Thermal Expansion Coefficient | /°C | /°C |
 
 ### Coupling Methods

@@ -208,23 +208,25 @@ model.Pressure(
 all_cells = instance.cells
 region = assembly.Set(name='Whole-Body', cells=all_cells)
 
-# Method 1: Using body force
+# Method 1: Using body force (components = force per unit volume = ρ·g, N/mm³)
 gravity = 9800.0  # mm/s²
+rho = 7.85e-09    # tonne/mm³
 model.BodyForce(
     name='Load-Gravity',
     createStepName='Step-1',
     region=region,
     comp1=0.0,
-    comp2=-gravity,
+    comp2=-rho * gravity,  # N/mm³
     comp3=0.0
 )
 
-# Method 2: Using gravity load
+# Method 2: Using gravity load (components = actual acceleration, mm/s²)
 model.Gravity(
     name='Load-Gravity',
     createStepName='Step-1',
+    region=region,
     comp1=0.0,
-    comp2=-1.0,
+    comp2=-gravity,   # -9800.0 mm/s² — NOT a unit vector!
     comp3=0.0
 )
 ```

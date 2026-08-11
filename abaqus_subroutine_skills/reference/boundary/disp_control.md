@@ -62,7 +62,7 @@ C
 C-----------------------------------------------------------------------
 C  Vibration parameters
 C-----------------------------------------------------------------------
-      AMP   = 1.0D-3       ! Amplitude (m)
+      AMP   = 1.0D0         ! Amplitude (mm)
       FREQ  = 10.0D0       ! Frequency (Hz)
       PHASE = 0.0D0        ! Initial phase (rad)
 C
@@ -100,7 +100,7 @@ C
 C-----------------------------------------------------------------------
 C  Sweep parameters
 C-----------------------------------------------------------------------
-      AMP     = 1.0D-3     ! Amplitude (m)
+      AMP     = 1.0D0       ! Amplitude (mm)
       F0      = 5.0D0      ! Start frequency (Hz)
       F1      = 100.0D0    ! End frequency (Hz)
       T_TOTAL = 10.0D0     ! Total sweep time (s)
@@ -152,8 +152,8 @@ C
 C-----------------------------------------------------------------------
 C  Parameters
 C-----------------------------------------------------------------------
-      MAX_DISP = 0.01D0    ! Maximum displacement (m)
-      L        = 1.0D0     ! Beam length (m)
+      MAX_DISP = 10.0D0    ! Maximum displacement (mm)
+      L        = 1000.0D0  ! Beam length (mm)
       T = TIME(2)
 C
 C-----------------------------------------------------------------------

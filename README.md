@@ -3,9 +3,10 @@
 <div align="center">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Abaqus](https://img.shields.io/badge/Abaqus-2016%2B-blue.svg)](https://www.3ds.com/products-services/simulia/products/abaqus/)
-[![Python](https://img.shields.io/badge/Python-2.7%2F3.x-green.svg)](https://www.python.org/)
+[![Abaqus](https://img.shields.io/badge/Abaqus-2023%2B-blue.svg)](https://www.3ds.com/products-services/simulia/products/abaqus/)
+[![Python](https://img.shields.io/badge/Python-3.9%2B-green.svg)](https://www.python.org/)
 [![Fortran](https://img.shields.io/badge/Fortran-90%2B-purple.svg)](https://fortran-lang.org/)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-open%20standard-orange)](https://agentskills.io)
 
 [English](#english) | [中文](#中文)
 
@@ -17,7 +18,14 @@
 
 ## Project Overview
 
-This is a comprehensive **Abaqus Development Skills Library** designed to help engineers, researchers, and students quickly master Abaqus scripting control and user subroutine development technologies. Through structured knowledge organization and rich example code, it significantly reduces the learning curve for Abaqus customization.
+This is a comprehensive **Abaqus Development Skills Library** designed to help engineers, researchers, and students quickly master Abaqus scripting control and user subroutine development technologies — and to let **AI agents** (Claude Code, OpenAI Codex, opencode, Gemini CLI, Cursor...) execute Abaqus simulation tasks end-to-end using the open [Agent Skills](https://agentskills.io) standard.
+
+**Key features:**
+- **Skills for agents**: progressive-disclosure `SKILL.md` + `reference/` templates
+- **End-to-end agent loop**: headless run → log diagnosis → ODB post-processing → verification (see `abaqus_agent_playbook.md`)
+- **Executable helpers**: `scripts/` (unit converter, .inp checker, ODB extractor, job monitor)
+- **21 subroutine reference docs** incl. DFLUX/UMATHT/CREEP/UAMP/URDFIL/UEXTERNALDB/ORIENT
+- **Corrected & unit-consistent** (N-mm-MPa only); see `docs/ERRATA.md`
 
 ---
 
@@ -32,6 +40,21 @@ npx skills add jasonanewcoder/abaqus_skills
 This registers all skills in the library with Claude Code. After installation, Claude will automatically load the relevant skill when you describe an Abaqus task.
 
 > **Requirements**: [Node.js](https://nodejs.org/) ≥ 18 (for `npx`). Ships with Claude Code.
+
+### Other Agents (Codex / opencode / Gemini CLI)
+
+```bash
+# Codex (user-level)
+git clone https://github.com/jasonanewcoder/abaqus_skills.git ~/.agents/skills/abaqus_skills
+# opencode
+git clone https://github.com/jasonanewcoder/abaqus_skills.git ~/.config/opencode/skills/abaqus_skills
+# Gemini CLI
+git clone https://github.com/jasonanewcoder/abaqus_skills.git ~/.gemini/skills/abaqus_skills
+# repo-level (works for several tools)
+mkdir -p .agents/skills && git clone https://github.com/jasonanewcoder/abaqus_skills.git .agents/skills/abaqus_skills
+```
+
+Full instructions: `docs/agent_installation.md`
 
 ### Method 2: Git Clone
 
@@ -120,12 +143,12 @@ Uses Python language for automated modeling, analysis, and post-processing in Ab
 
 | Category | Description |
 |----------|-------------|
-| **General** | Modeling, materials, boundary conditions, meshing, step settings, job submission |
+| **General** | Modeling, materials, BCs, meshing, steps, jobs **+ agent loop: headless execution, error diagnosis, ODB post-processing, interaction/contact, verification** |
 | **Static Analysis** | Linear elastic analysis, nonlinear static analysis |
-| **Fatigue Analysis** | High-cycle fatigue, low-cycle fatigue |
-| **Thermal Analysis** | Heat transfer, thermal-stress coupling |
-| **Composite Materials** | Laminate modeling, failure analysis |
-| **XFEM** | Crack propagation simulation |
+| **Fatigue Analysis** | High-cycle fatigue (S-N), low-cycle fatigue (Coffin-Manson, fe-safe) |
+| **Thermal Analysis** | Heat transfer, thermal-stress coupling, welding |
+| **Composite Materials** | Laminate modeling, Hashin/Tsai-Wu failure, continuum shells |
+| **XFEM** | Crack propagation (XFEM) + VCCT crack growth |
 
 **Directory Structure:**
 
@@ -143,20 +166,38 @@ abaqus_scriptcontrol_skills/
 │       ├── bc_load.md
 │       ├── mesh.md
 │       ├── step.md
-│       └── job.md
+│       ├── job.md
+│       ├── interaction_contact.md
+│       ├── headless_execution.md
+│       ├── error_diagnosis.md
+│       ├── postprocess_odb.md
+│       └── verification.md
 ├── static/                        # Static analysis
 │   ├── SKILL.md
 │   └── reference/
 │       ├── linear.md
 │       └── nonlinear.md
 ├── fatigue/                       # Fatigue analysis
-│   └── SKILL.md
+│   ├── SKILL.md
+│   └── reference/
+│       ├── high_cycle.md
+│       └── low_cycle.md
 ├── thermal/                       # Thermal analysis
-│   └── SKILL.md
+│   ├── SKILL.md
+│   └── reference/
+│       ├── steady_state.md
+│       └── transient.md
 ├── composite/                     # Composite materials
-│   └── SKILL.md
+│   ├── SKILL.md
+│   └── reference/
+│       ├── layup_definition.md
+│       ├── failure_analysis.md
+│       └── tsaiwu_continuum_shell.md
 └── xfem/                          # XFEM crack analysis
-    └── SKILL.md
+    ├── SKILL.md
+    └── reference/
+        ├── crack_initiation.md
+        └── vcct_fracture.md
 ```
 
 ### 2. Abaqus Subroutine Skills (`abaqus_subroutine_skills/`)
@@ -169,18 +210,25 @@ Uses Fortran language to develop custom user subroutines, extending Abaqus funct
 |------------|---------------------|-------------------|
 | UMAT | Custom material constitutive model | Standard |
 | VUMAT | Custom material constitutive model | Explicit |
+| CREEP | Creep / viscoplastic material | Standard |
+| UMATHT | Custom thermal constitutive model | Standard (Thermal) |
 | DLOAD | Distributed load definition | Standard |
 | VDLOAD | Distributed load definition | Explicit |
+| DFLUX | Moving heat source / heat flux | Thermal |
 | DISP | Custom displacement boundary | Standard |
 | VDISP | Custom displacement boundary | Explicit |
 | USDFLD | User-defined field variables | General |
+| ORIENT | Material orientation | General |
 | SIGINI | Initial stress definition | General |
 | SDVINI | Initial state variables | General |
 | FRIC | Custom friction model | Standard |
-| VRIC | Custom friction model | Explicit |
 | HETVAL | Heat generation | Thermal |
+| FILM | Custom convection | Thermal |
 | UEL | User-defined element | Standard |
 | VUEL | User-defined element | Explicit |
+| UAMP | Custom amplitude / control | General |
+| UEXTERNALDB | Job I/O management | General |
+| URDFIL | Results file filtering | General |
 
 **Directory Structure:**
 
@@ -204,31 +252,42 @@ abaqus_subroutine_skills/
 │   ├── sigini/
 │   ├── sdvini/
 │   ├── fric/
-│   ├── vric/
 │   ├── hetval/
 │   ├── uel/
-│   ├── vuEL/
 │   ├── film/
 │   └── ...
 └── reference/                     # Reference documents
     ├── material/
     │   ├── umat_elastic.md
     │   ├── umat_plasticity.md
-    │   └── vumat_elastic.md
+    │   ├── vumat_elastic.md
+    │   └── creep_material.md
     ├── load/
-    │   └── dload_moving.md
+    │   ├── dload_moving.md
+    │   ├── vdload_moving.md
+    │   └── uamp_amplitude.md
     ├── boundary/
-    │   └── disp_control.md
+    │   ├── disp_control.md
+    │   └── vdisp_control.md
     ├── initial/
-    │   └── sigini_stress.md
+    │   ├── sigini_stress.md
+    │   └── sdvini_state_variables.md
     ├── field/
-    │   └── usdfld_spatial.md
+    │   ├── usdfld_spatial.md
+    │   └── orient_direction.md
     ├── friction/
     │   └── fric_contact.md
     ├── thermal/
-    │   └── hetval_heat.md
-    └── element/
-        └── uel_spring.md
+    │   ├── hetval_heat.md
+    │   ├── film_convection.md
+    │   ├── dflux_welding.md
+    │   └── umatht_thermal.md
+    ├── element/
+    │   └── uel_spring.md
+    ├── output/
+    │   └── urdfil_results.md
+    └── utility/
+        └── uexternaldb_mgmt.md
 ```
 
 ---
@@ -237,9 +296,19 @@ abaqus_subroutine_skills/
 
 ### Requirements
 
-- **Abaqus**: 2016 or later
-- **Python**: 2.7 or 3.x (depends on Abaqus version)
+- **Abaqus**: 2023 or later (Python 3.9+/3.10)
+- **Python**: 3.9+ for `scripts/` tools (run with system python3)
 - **Fortran Compiler**: Intel Fortran or GNU Fortran (for subroutines)
+
+### Run a Simulation with an AI Agent
+
+```
+1. Read abaqus_agent_playbook.md (the agent loop)
+2. Build:   abaqus cae noGUI=model_setup.py
+3. Check:   python3 scripts/inp_checker.py Job-1.inp
+4. Run:     scripts/job_monitor.sh Job-1 cpus=4
+5. Results: abaqus python scripts/odb_extract.py Job-1.odb --field U --max
+```
 
 ### Using Script Control Skills
 
@@ -281,10 +350,13 @@ abaqus_subroutine_skills/
 
 ## Documentation
 
+- [Agent Playbook](abaqus_agent_playbook.md) — end-to-end execution loop for AI agents
 - [Script Control Manual](abaqus_scriptcontrol_skills/manual.md)
 - [Subroutine Manual](abaqus_subroutine_skills/manual.md)
 - [Script Control Chinese Manual](abaqus_scriptcontrol_skills/manual_zh.md)
 - [Subroutine Chinese Manual](abaqus_subroutine_skills/manual_zh.md)
+- [Errata & Known Issues](docs/ERRATA.md)
+- [Agent Installation](docs/agent_installation.md)
 
 ---
 
@@ -412,8 +484,8 @@ ls ~/.claude/skills/abaqus_skills/
 ### 快速开始
 
 **环境要求：**
-- Abaqus 2016 或更高版本
-- Python 2.7 或 3.x（取决于 Abaqus 版本）
+- Abaqus 2023 或更高版本（Python 3.9+）
+- Python 3.9+（运行 `scripts/` 辅助工具）
 - Fortran 编译器：Intel Fortran 或 GNU Fortran
 
 **使用方法：**
@@ -428,6 +500,13 @@ ls ~/.claude/skills/abaqus_skills/
 2. 阅读 `reference/` 目录下的文档
 3. 参考 `official_examples/` 中的官方示例
 4. 使用 `abaqus make` 命令编译子程序
+
+**AI Agent 端到端执行（Codex / Claude Code / opencode 等）：**
+1. 阅读 `abaqus_agent_playbook.md`（执行闭环：澄清→生成→无头运行→诊断→迭代→验证→报告）
+2. 建模：`abaqus cae noGUI=model_setup.py`
+3. 检查：`python3 scripts/inp_checker.py Job-1.inp`
+4. 提交监控：`scripts/job_monitor.sh Job-1 cpus=4`
+5. 结果提取：`abaqus python scripts/odb_extract.py Job-1.odb --field U --max`
 
 ### 许可证
 

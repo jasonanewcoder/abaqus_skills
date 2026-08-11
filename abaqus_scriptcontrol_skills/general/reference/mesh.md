@@ -286,8 +286,8 @@ part.generateMesh()
 # Get mesh statistics
 mesh_stats = part.getMeshStats()
 
-# Check element quality
-elem_quality = part.quality
+# Check element quality (verifyMesh runs the built-in mesh diagnostics)
+part.verifyMesh()
 
 # Check unmeshed regions
 unmeshed_regions = part.getUnmeshedRegions()

@@ -59,7 +59,7 @@ del model.sketches['__profile__']
 # ========== Material (with plasticity) ==========
 material = model.Material(name='Steel-Plastic')
 material.Elastic(table=((E, nu),))
-material.Density(table=((rho),))
+material.Density(table=((rho,),))
 
 plastic_data = (
     (yield_stress, 0.0),

@@ -76,7 +76,7 @@ model.StaticStep(
 model.FieldOutputRequest(
     name='F-Output-1',
     createStepName='Vehicle-Passage',
-    variables=('S', 'E', 'U', 'RF', 'MISES'),
+    variables=('S', 'E', 'U', 'RF'),
     frequency=10  # Every 10 increments
 )
 

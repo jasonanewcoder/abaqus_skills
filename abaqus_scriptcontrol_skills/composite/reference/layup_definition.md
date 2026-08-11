@@ -157,7 +157,7 @@ model.StaticStep(
 model.FieldOutputRequest(
     name='F-Output-1',
     createStepName='Bending-Step',
-    variables=('S', 'E', 'U', 'RF', 'MISES'),
+    variables=('S', 'E', 'U', 'RF'),
     frequency=1
 )
 

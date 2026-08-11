@@ -60,7 +60,7 @@ C     Parameters
 C-----------------------------------------------------------------------
       T_INF = 20.0D0         ! Ambient temperature (°C)
       C_NATURAL = 1.42D0     ! Natural convection constant (vertical plate)
-C                            ! Units: W/(m²·K^1.333) → mW/(mm²·K^1.333) × 1e-6
+C                            ! Units: W/(m²·K^1.333) → mW/(mm²·K^1.333) × 1e-3
 C
 C-----------------------------------------------------------------------
 C     Calculate film coefficient
@@ -70,9 +70,8 @@ C-----------------------------------------------------------------------
 C
       H = C_NATURAL * (ABS(DT) ** 0.333D0)
 C
-C     Convert to Abaqus units if needed:
-C     W/(m²·K) → mW/(mm²·K): multiply by 1e-6
-      H = H * 1.0D-6
+C     Convert to Abaqus units: W/(m²·K) → mW/(mm²·K) = × 1e-3
+      H = H * 1.0D-3
 C
       SINK = T_INF
 C

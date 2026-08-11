@@ -68,8 +68,8 @@ C-----------------------------------------------------------------------
       M   = 0.51D0           ! Reaction order m
       N   = 1.47D0           ! Reaction order n
       R   = 8.314D0          ! Gas constant
-      TOTAL_HEAT = 4.0D5     ! Total cure heat (J/kg)
-      RHO = 1500.0D0         ! Density (kg/m³)
+      TOTAL_HEAT = 4.0D11    ! Total cure heat (N·mm/tonne = J/kg × 1e6)
+      RHO = 1.5D-9           ! Density (tonne/mm³ = kg/m³ × 1e-12)
 C
 C-----------------------------------------------------------------------
 C  Get temperature and cure degree
@@ -129,6 +129,7 @@ C
      1 COORMS(3)
 C
       REAL*8 ETA, SIGMA_EQ, EPS_PLAS, RATE_PLAS
+      REAL*8 SIGMA_Y, K, N_HARD
       REAL*8 HEAT_GENERATION
 C
 C-----------------------------------------------------------------------
@@ -145,10 +146,10 @@ C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
 C  Calculate equivalent stress (from state variables or constitutive relationship)
-C  Here assume simple power law hardening
+C  Here assume simple power law hardening (MPa units)
 C-----------------------------------------------------------------------
-      SIGMA_Y = 200.0D6      ! Yield stress (Pa)
-      K = 500.0D6            ! Hardening coefficient
+      SIGMA_Y = 200.0D0      ! Yield stress (MPa)
+      K = 500.0D0            ! Hardening coefficient (MPa)
       N_HARD = 0.3D0         ! Hardening exponent
 C
       SIGMA_EQ = SIGMA_Y + K * (EPS_PLAS**N_HARD)
@@ -171,11 +172,12 @@ C
 ```abaqus
 *Material, name=Composite
 *Conductivity
-0.5, 
+0.5,
 *Specific heat
-1200.0, 
+1.2e9,
+** = 1200 J/(kg·K) × 1e6 (N·mm/(tonne·K))
 *Density
-1500.0, 
+1.5e-9,
 *Heat generation
 *Depvar
 2
@@ -200,7 +202,7 @@ C
 C-----------------------------------------------------------------------
 C  Base convection coefficient
 C-----------------------------------------------------------------------
-      H_CONST = 10.0D0       ! W/(m²·K)
+      H_CONST = 1.0D-2       ! mW/(mm²·K) = 10 W/(m²·K) × 1e-3
 C
 C-----------------------------------------------------------------------
 C  Temperature dependent convection coefficient (natural convection)

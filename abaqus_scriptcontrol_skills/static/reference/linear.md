@@ -57,7 +57,7 @@ del model.sketches['__profile__']
 # ========== 3. Material and Section ==========
 material = model.Material(name='Steel')
 material.Elastic(table=((E, nu),))
-material.Density(table=((rho),))
+material.Density(table=((rho,),))
 
 section = model.HomogeneousSolidSection(name='Section-1', material='Steel')
 region = (part.cells,)
@@ -83,7 +83,7 @@ model.StaticStep(
 model.FieldOutputRequest(
     name='F-Output-1',
     createStepName='Static-Step',
-    variables=('S', 'E', 'U', 'RF', 'MISES'),
+    variables=('S', 'E', 'U', 'RF'),
     frequency=1
 )
 

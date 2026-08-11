@@ -1,7 +1,13 @@
 ---
 name: abaqus-script-control-composite
-description: Abaqus composite material analysis — laminated shell elements, classical laminate theory (CLT), Hashin failure criteria, and progressive damage simulation.
-version: "1.0"
+description: >-
+  Abaqus composite analysis: laminated shell (S4R) and continuum shell (SC8R)
+  layups, classical laminate theory, Hashin/Puck/LaRC failure criteria,
+  progressive damage, Tsai-Wu interactive failure index, per-ply post-processing.
+  Use when the task mentions: composite analysis, laminate, layup, ply, Hashin
+  failure, Tsai-Wu, fiber failure, matrix failure, delamination, 复合材料,
+  层合板, 铺层. Requires abaqus-script-control-general as foundation.
+version: "1.1"
 capabilities:
   - composite_layup_definition
   - laminate_stiffness_analysis
@@ -21,7 +27,7 @@ triggers:
   - "铺层"
 constraints:
   - "Requires general/SKILL.md as foundation"
-  - "Reference documentation is limited — expand for production use"
+  - "Reference docs: layup_definition.md, failure_analysis.md, tsaiwu_continuum_shell.md"
   - "Composite analysis requires orthotropic material properties (LAMINA type)"
 ---
 
@@ -104,6 +110,7 @@ for i, (angle, thickness) in enumerate(layup):
 
 - [Laminate Layup Definition](reference/layup_definition.md) — Classical Laminate Theory, orthotropic lamina properties, programmatic layup creation, per-ply post-processing
 - [Failure Analysis](reference/failure_analysis.md) — Hashin/Puck/LaRC criteria, progressive damage, damage variable interpretation, strength data
+- [Tsai-Wu & Continuum Shells](reference/tsaiwu_continuum_shell.md) — interactive failure index, SC8R layups, per-ply Tsai-Wu post-processing
 
 ## Related Skills
 
